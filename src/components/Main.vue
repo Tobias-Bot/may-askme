@@ -3,7 +3,7 @@
     <v-app-bar app :height="this.toolbarHeight" :color="this.colorTheme">
       <v-toolbar-title
         ><span class="logoTitle">Мαú</span
-        ><span class="appTitle">аскми</span></v-toolbar-title
+        ><span class="appTitle">аск</span></v-toolbar-title
       >
     </v-app-bar>
 
@@ -11,20 +11,20 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
-        <v-card :height="this.mainScreenHeight">
+        <v-card>
           <v-tabs-items v-model="tab">
             <v-tab-item>
-              <v-card flat class="tab">
+              <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
                 <v-card-text>Hello1</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat class="tab">
+              <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
                 <v-card-text>Hello2</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat class="tab">
+              <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
                 <v-card-text>Hello3</v-card-text>
               </v-card>
             </v-tab-item>
@@ -33,19 +33,29 @@
       </v-container>
     </v-main>
 
-    <v-footer app :height="this.footerHeight">
+    <v-footer app :height="this.footerHeight" color="#FDF5E6">
       <v-tabs
         v-model="tab"
         :background-color="this.colorTheme"
-        slider-color="#B8B3A4"
-        color="#B8B3A4"
+        slider-color="#FDFDFD"
+        color="black"
         grow
-        centered
-        style="border-radius: 8px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.4);"
+        icons-and-text
+        slider-size="4"
+        style="border-radius: 3px; box-shadow: 0px 3px 3px rgb(0 0 0 / 35%)"
       >
-        <v-tab>Hello1</v-tab>
-        <v-tab>Hello2</v-tab>
-        <v-tab>Hello3</v-tab>
+        <v-tab>
+          <div class="tagTitle">Вопросы</div>
+          <v-icon>mdi-frequently-asked-questions</v-icon>
+        </v-tab>
+        <v-tab>
+          <div class="tagTitle">Создать</div>
+          <v-icon>mdi-pencil</v-icon>
+        </v-tab>
+        <v-tab>
+          <div class="tagTitle">Избранное</div>
+          <v-icon>mdi-heart</v-icon>
+        </v-tab>
       </v-tabs>
     </v-footer>
   </v-app>
@@ -61,7 +71,7 @@ export default {
   data: () => ({
     colorTheme: "#F0EAD6",
     toolbarHeight: "55",
-    footerHeight: "70",
+    footerHeight: "130",
     mainScreenHeight: "0",
     tab: null,
   }),
@@ -74,7 +84,7 @@ export default {
     const screenHeight = document.documentElement.scrollHeight;
 
     this.mainScreenHeight =
-      screenHeight - this.toolbarHeight - this.footerHeight;
+      screenHeight - this.toolbarHeight - this.footerHeight + 2;
 
     console.log(this.mainScreenHeight);
   },
