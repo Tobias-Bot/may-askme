@@ -4,11 +4,11 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import bridge from "@vkontakte/vk-bridge";
 
+import './App.css';
+
 Vue.config.productionTip = false
 
-bridge.send("VKWebAppInit", {}).then((r) => {
-  console.log(r);
-});
+bridge.send("VKWebAppInit", {});
 
 new Vue({
   store,
