@@ -1,5 +1,5 @@
 <template>
-  <div>Hello world!</div>
+  <v-toolbar dense color="#F6DFFD"></v-toolbar>
 </template>
 
 <script>

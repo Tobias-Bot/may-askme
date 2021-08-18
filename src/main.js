@@ -6,7 +6,9 @@ import bridge from "@vkontakte/vk-bridge";
 
 Vue.config.productionTip = false
 
-bridge.send("VKWebAppInit", {});
+bridge.send("VKWebAppInit", {}).then((r) => {
+  console.log(r);
+});
 
 new Vue({
   store,
