@@ -8,7 +8,7 @@
     >
       <v-toolbar-title
         ><span class="logoTitle">Мαú</span
-        ><span class="appTitle">аск</span></v-toolbar-title
+        ><span class="appTitle">аскМи</span></v-toolbar-title
       >
     </v-app-bar>
 
@@ -16,16 +16,6 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
-        <v-alert
-          v-show="this.show"
-          border="left"
-          color="#FDF5E6"
-          elevation="24"
-          outlined
-          type="success"
-          transition="scale-transition"
-          >Hello! This is alert</v-alert
-        >
         <v-card>
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -102,10 +92,6 @@ export default {
 
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
-
-    setTimeout(() => {
-      this.show = true;
-    }, 1000);
   },
 };
 </script>
