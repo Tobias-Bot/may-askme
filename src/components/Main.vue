@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <v-app-bar app :height="this.toolbarHeight" :color="this.colorTheme">
+    <v-app-bar
+      app
+      :height="this.toolbarHeight"
+      :color="this.colorTheme"
+      style="box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);"
+    >
       <v-toolbar-title
         ><span class="logoTitle">Мαú</span
         ><span class="appTitle">аск</span></v-toolbar-title
@@ -11,11 +16,21 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
+        <v-alert
+          v-show="this.show"
+          border="left"
+          color="#FDF5E6"
+          elevation="24"
+          outlined
+          type="success"
+          transition="scale-transition"
+          >Hello! This is alert</v-alert
+        >
         <v-card>
           <v-tabs-items v-model="tab">
             <v-tab-item>
               <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
-                <v-card-text>Hello1</v-card-text>
+                <QuestionsPage />
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -42,7 +57,7 @@
         grow
         icons-and-text
         slider-size="4"
-        style="border-radius: 3px; box-shadow: 0px 3px 3px rgb(0 0 0 / 35%)"
+        style="border-radius: 3px; box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);"
       >
         <v-tab>
           <div class="tagTitle">Вопросы</div>
@@ -63,30 +78,34 @@
 
 <script>
 // import bridge from "@vkontakte/vk-bridge";
-import chroma from "chroma-js";
+// import chroma from "chroma-js";
+
+import QuestionsPage from "./QuestionsPage.vue";
 
 export default {
   name: "Main",
-
+  components: {
+    QuestionsPage,
+  },
   data: () => ({
     colorTheme: "#F0EAD6",
     toolbarHeight: "55",
     footerHeight: "130",
     mainScreenHeight: "0",
     tab: null,
+
+    show: false,
   }),
 
   mounted() {
-    let colorVals = chroma.random();
-
-    this.color = `rgba(${colorVals[0]}, ${colorVals[1]}, ${colorVals[2]}, 0.5)`;
-
     const screenHeight = document.documentElement.scrollHeight;
 
     this.mainScreenHeight =
-      screenHeight - this.toolbarHeight - this.footerHeight + 2;
+      screenHeight - this.toolbarHeight - this.footerHeight;
 
-    console.log(this.mainScreenHeight);
+    setTimeout(() => {
+      this.show = true;
+    }, 1000);
   },
 };
 </script>
