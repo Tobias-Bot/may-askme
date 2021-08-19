@@ -3,7 +3,6 @@
     <v-card>
       <v-toolbar color="#FDF5E6" style="padding-top: 10px;">
         <v-text-field
-          style="margin-bottom: 10px;"
           flat
           hide-details
           label="Найти вопрос"
@@ -25,10 +24,21 @@
 
       <v-tabs-items v-model="tabs">
         <v-tab-item v-for="topic in topics" :key="topic.title">
-          <v-card flat tile color="#F0EAD6" style="padding: 1px 0px 20px 0px;">
+          <v-card
+            flat
+            tile
+            color="#F0EAD6"
+            :style="`display: block; max-height: ${530}px; overflow-y: auto; padding: 1px 0px 20px 0px;`"
+          >
             <v-card-text v-show="topic.description" style="font-size: 13px;">{{
               topic.description
             }}</v-card-text>
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
             <QuestCard />
           </v-card>
         </v-tab-item>

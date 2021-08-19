@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-bottom: 20px;">
     <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
       <v-card-title style="font-size: 19px;">Hello1</v-card-title>
       <v-card-subtitle style="font-size: 13px;">Hello</v-card-subtitle>
@@ -27,7 +27,7 @@
               style="padding: 5px; border-radius: 100px; box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4); margin-right: 10px;"
               v-bind="attrs"
               v-on="on"
-              >mdi-playlist-plus</v-icon
+              >mdi-format-list-bulleted-square</v-icon
             >
           </template>
 
