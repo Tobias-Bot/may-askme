@@ -70,8 +70,8 @@ export default {
   data: () => ({
     colorTheme: "#F0EAD6",
     tabs: null,
-
     pageHeight: 0,
+    currentTab: "все вопросы",
 
     topics,
     quests: questions,
@@ -82,10 +82,14 @@ export default {
   methods: {
     searchQuestions(text) {
       if (text && text !== " ") {
-        let query = questions.filter((q) => q.text.includes(text));
+        let query = questions.filter(
+          (q) => q.text.includes(text) && q.topics.includes(this.currentTab)
+        );
         this.quests = query;
       } else {
         this.quests = questions;
+
+        this.topicQuestions(this.currentTab);
       }
     },
     topicQuestions(topic) {
@@ -95,6 +99,8 @@ export default {
       } else {
         this.quests = questions;
       }
+
+      this.currentTab = topic;
     },
   },
 };
