@@ -92,10 +92,10 @@
           :height="sheetHeight"
           color="#FDF5E6"
         >
-          <v-btn class="mt-1" text color="blue" @click="sheet = !sheet">
+          <v-btn class="mt-2" text color="blue" @click="sheet = !sheet">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <div>
+          <div class="mt-2">
             {{ question.text }}
           </div>
           <div
@@ -149,6 +149,7 @@
             rounded
             height="6"
           ></v-progress-linear>
+          <br />
           <br />
           <v-chip
             class="ma-1"

@@ -12,11 +12,16 @@
           clearable
           dense
           color="white"
+          @input="(e) => searchQuestions(e)"
         ></v-text-field>
 
         <template v-slot:extension>
           <v-tabs v-model="tabs" grow show-arrows>
-            <v-tab v-for="topic in topics" :key="topic.title">
+            <v-tab
+              v-for="topic in topics"
+              :key="topic.title"
+              @click="topicQuestions(topic.title)"
+            >
               <span style="font-size: 12px;">{{ topic.title }}</span>
             </v-tab>
           </v-tabs>
@@ -29,12 +34,18 @@
             flat
             tile
             color="#F0EAD6"
-            :style="`display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`"
+            :style="
+              `display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`
+            "
           >
             <v-card-text v-show="topic.description" style="font-size: 13px;">{{
               topic.description
             }}</v-card-text>
-            <QuestCard v-for="quest in questions" :key="quest.id" :question="quest" />
+            <QuestCard
+              v-for="quest in quests"
+              :key="quest.id"
+              :question="quest"
+            />
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -63,11 +74,28 @@ export default {
     pageHeight: 0,
 
     topics,
-    questions,
+    quests: questions,
   }),
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
   },
-  methods: {},
+  methods: {
+    searchQuestions(text) {
+      if (text && text !== " ") {
+        let query = questions.filter((q) => q.text.includes(text));
+        this.quests = query;
+      } else {
+        this.quests = questions;
+      }
+    },
+    topicQuestions(topic) {
+      if (topic !== "все вопросы") {
+        let query = questions.filter((q) => q.topics.includes(topic));
+        this.quests = query;
+      } else {
+        this.quests = questions;
+      }
+    },
+  },
 };
 </script>

@@ -42,7 +42,7 @@
       <v-tabs
         v-model="tab"
         :background-color="this.colorTheme"
-        slider-color="#FDFDFD"
+        slider-color="#FDF5E6"
         color="black"
         grow
         icons-and-text
