@@ -2,7 +2,7 @@
   <div style="margin-bottom: 20px;">
     <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
       <v-card-title class="text" style="font-size: 17px;">{{
-        this.question.text
+        this.question.data.text
       }}</v-card-title>
       <!-- <v-alert
         v-show="!isLiked"
@@ -17,7 +17,7 @@
         <v-icon class="cardMiniBtn" @click="sheet = !sheet"
           >mdi-information-variant</v-icon
         >
-        <div v-if="!isLiked">
+        <div v-if="!this.isLike">
           <v-icon class="cardBtn" @click="likeCard">
             mdi-heart-outline
           </v-icon>
@@ -71,7 +71,12 @@
                   >
                     <v-icon>mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-btn v-show="isInputCorrect" color="blue darken-1" text>
+                  <v-btn
+                    v-show="isInputCorrect"
+                    color="blue darken-1"
+                    text
+                    @click="() => $store.commit('createList', listTitle)"
+                  >
                     Создать список
                   </v-btn>
                 </div>
@@ -96,14 +101,14 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <div class="mt-2">
-            {{ question.text }}
+            {{ question.data.text }}
           </div>
           <div
-            v-if="question.ps"
+            v-if="question.data.ps"
             class="py-1"
             style="font-size: 13px; font-weight: 500; opacity: 0.6;"
           >
-            {{ question.ps }}
+            {{ question.data.ps }}
           </div>
           <br />
           <b>Сложность</b>
@@ -111,7 +116,7 @@
             color="#7DB2F3"
             class="progressBar"
             buffer-value="0"
-            :value="question.lvl"
+            :value="question.data.lvl"
             stream
             rounded
             height="6"
@@ -122,7 +127,7 @@
             color="#A0BFF3"
             class="progressBar"
             buffer-value="0"
-            :value="question.depth"
+            :value="question.data.depth"
             stream
             rounded
             height="6"
@@ -133,7 +138,7 @@
             color="#C7BFF3"
             class="progressBar"
             buffer-value="0"
-            :value="question.closeness"
+            :value="question.data.closeness"
             stream
             rounded
             height="6"
@@ -144,7 +149,7 @@
             color="#E1B2F3"
             class="progressBar"
             buffer-value="0"
-            :value="question.emotions"
+            :value="question.data.emotions"
             stream
             rounded
             height="6"
@@ -174,7 +179,7 @@ export default {
   components: {},
   props: ["question"],
   data: () => ({
-    isLiked: false,
+    listTitle: "",
     isListCreating: false,
     isInputCorrect: false,
     listCreatingRules: [
@@ -189,24 +194,69 @@ export default {
   }),
   mounted() {
     this.sheetHeight = document.documentElement.scrollHeight;
+    this.questionTags = this.question.data.topics.split(",");
 
-    this.questionTags = this.question.topics.split(",");
+    this.listCreatingRules.push(
+      (value) => {
+        return !~this.savedLists.findIndex((list) => list.name === value) ||
+        "Такой список у тебя уже есть"
+      }
+    );
+  },
+  computed: {
+    savedCards() {
+      return this.$store.getters.getCards;
+    },
+    savedLists() {
+      return this.$store.getters.getLists;
+    },
+    isLike() {
+      let storeCards = this.savedCards;
+
+      if (
+        storeCards &&
+        ~storeCards.findIndex((c) => c === this.question.index)
+      ) {
+        return true;
+      }
+
+      return false;
+    },
   },
   methods: {
     likeCard() {
+      let storeCards = this.savedCards;
+
+      if (!storeCards) {
+        storeCards = [];
+      }
+
+      storeCards.push(this.question.index);
+
+      this.$store.commit("setCards", storeCards);
+
       this.isLiked = true;
     },
     dislikeCard() {
+      let cards = this.savedCards;
+
+      cards.splice(
+        cards.findIndex((c) => this.question.index === c),
+        1
+      );
+
+      this.$store.commit("setCards", cards);
+
       this.isLiked = false;
     },
-    saveToLocalStorage() {},
-    checkInput(e) {
+    checkInput(text) {
       this.listCreatingRules.forEach((rule) => {
-        if (rule(e) !== true) {
+        if (rule(text) !== true) {
           this.isInputCorrect = false;
           return;
         } else {
           this.isInputCorrect = true;
+          this.listTitle = text;
         }
       });
     },
