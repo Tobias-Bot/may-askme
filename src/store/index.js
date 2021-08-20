@@ -33,7 +33,7 @@ export default new Vuex.Store({
         quests: [],
       };
 
-      state.lists.push(list);
+      state.lists.unshift(list);
 
       localStorage.setItem("savedLists", JSON.stringify(state.lists));
     }

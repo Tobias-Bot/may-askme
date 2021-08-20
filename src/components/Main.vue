@@ -25,12 +25,16 @@
             </v-tab-item>
             <v-tab-item>
               <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
-                <v-card-text>Hello2</v-card-text>
+                <v-card-text style="font-size: 18px; line-height: 1.6;"
+                  >Если ты сейчас читаешь это, то знай, что человек, который
+                  сейчас сидит рядом с тобой, очень любит тебя, и ты ему очень
+                  дорога! ♥</v-card-text
+                >
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
-                <v-card-text>Hello3</v-card-text>
+                <v-card-text>Hello!</v-card-text>
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -86,7 +90,13 @@ export default {
 
     show: false,
   }),
+  created() {
+    let savedCards = JSON.parse(localStorage.getItem("savedCards"));
+    let savedLists = JSON.parse(localStorage.getItem("savedLists"));
 
+    if (savedCards) this.$store.commit("setCards", savedCards);
+    if (savedLists) this.$store.commit("setLists", savedLists);
+  },
   mounted() {
     const screenHeight = document.documentElement.scrollHeight;
 

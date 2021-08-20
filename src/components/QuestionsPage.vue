@@ -76,13 +76,6 @@ export default {
     topics,
     quests: questions,
   }),
-  created() {
-    let savedCards = JSON.parse(localStorage.getItem("savedCards"));
-    let savedLists = JSON.parse(localStorage.getItem("savedLists"));
-
-    if (savedCards) this.$store.commit('setCards', savedCards);
-    if (savedLists) this.$store.commit('setLists', savedLists);
-  },
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
   },

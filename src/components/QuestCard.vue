@@ -33,14 +33,32 @@
             <v-card color="#FDF5E6">
               <v-card-title>Добавить в список</v-card-title>
               <v-divider></v-divider>
-              <v-card-text style="text-align: center; padding: 50px;">
+              <v-card-text style="text-align: center; padding: 30px;">
                 <div v-show="!isListCreating">
-                  <div>Ты не создал ни одного списка. Как ты мог!..</div>
-                  <div>😔</div>
+                  <div v-show="!savedLists.length">
+                    <div>Ты не создал ни одного списка. Как ты мог!..</div>
+                    <div>😔</div>
+                  </div>
                   <br />
-                  <v-btn color="#59564F" text @click="isListCreating = true">
+                  <v-btn color="#59564F" text @click="isListCreating = false">
                     Создать список
                   </v-btn>
+                  <br />
+                  <br />
+                  <div v-show="savedLists.length">
+                    <v-checkbox
+                      v-for="list in savedLists"
+                      :key="list.name"
+                      :value="list.quests.includes(question.index)"
+                      :label="list.name"
+                      dense
+                      @change="
+                        (e) => {
+                          setCardList(e, list.name);
+                        }
+                      "
+                    ></v-checkbox>
+                  </div>
                 </div>
                 <div v-show="isListCreating">
                   <v-text-field
@@ -196,12 +214,12 @@ export default {
     this.sheetHeight = document.documentElement.scrollHeight;
     this.questionTags = this.question.data.topics.split(",");
 
-    this.listCreatingRules.push(
-      (value) => {
-        return !~this.savedLists.findIndex((list) => list.name === value) ||
+    this.listCreatingRules.push((value) => {
+      return (
+        !~this.savedLists.findIndex((list) => list.name === value) ||
         "Такой список у тебя уже есть"
-      }
-    );
+      );
+    });
   },
   computed: {
     savedCards() {
@@ -259,6 +277,9 @@ export default {
           this.listTitle = text;
         }
       });
+    },
+    setCardList(val, list) {
+      console.log(val, list);
     },
   },
 };
