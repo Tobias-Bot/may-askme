@@ -8,6 +8,11 @@ body {
   overflow-y: auto;
 }
 
+.text {
+  word-break: break-word;
+  line-height: 1.6;
+}
+
 /* ::-webkit-scrollbar-track {
   background-color: rgb(37, 37, 51);
 }
@@ -49,4 +54,27 @@ body {
   font-size: 10px;
   font-weight: 500;
   opacity: 0.9;
+}
+
+.cardBtn {
+  padding: 5px;
+  margin-right: 10px;
+  border-radius: 100px;
+  font-size: 26px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.cardMiniBtn {
+  padding: 1px;
+  margin-right: 10px;
+  border-radius: 100px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);
+  font-size: 16px;
+}
+
+.progressBar {
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
 }

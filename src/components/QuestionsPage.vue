@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <v-toolbar color="#FDF5E6" style="padding-top: 10px;">
+      <v-toolbar color="#FDF5E6" style="padding-top: 5px;">
         <v-text-field
           flat
           hide-details
@@ -10,6 +10,7 @@
           prepend-inner-icon="mdi-magnify"
           solo-inverted
           clearable
+          dense
           color="white"
         ></v-text-field>
 
@@ -28,18 +29,12 @@
             flat
             tile
             color="#F0EAD6"
-            :style="`display: block; max-height: ${530}px; overflow-y: auto; padding: 1px 0px 20px 0px;`"
+            :style="`display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`"
           >
             <v-card-text v-show="topic.description" style="font-size: 13px;">{{
               topic.description
             }}</v-card-text>
-            <QuestCard />
-            <QuestCard />
-            <QuestCard />
-            <QuestCard />
-            <QuestCard />
-            <QuestCard />
-            <QuestCard />
+            <QuestCard v-for="quest in questions" :key="quest.id" :question="quest" />
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -52,6 +47,7 @@
 // import chroma from "chroma-js";
 
 import topics from "../data/topics";
+import questions from "../data/questions/all";
 
 import QuestCard from "./QuestCard.vue";
 
@@ -64,8 +60,14 @@ export default {
     colorTheme: "#F0EAD6",
     tabs: null,
 
+    pageHeight: 0,
+
     topics,
+    questions,
   }),
+  mounted() {
+    this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
+  },
   methods: {},
 };
 </script>

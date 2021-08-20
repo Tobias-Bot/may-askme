@@ -1,8 +1,9 @@
 <template>
   <div style="margin-bottom: 20px;">
     <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
-      <v-card-title style="font-size: 19px;">Hello1</v-card-title>
-      <v-card-subtitle style="font-size: 13px;">Hello</v-card-subtitle>
+      <v-card-title class="text" style="font-size: 17px;">{{
+        this.question.text
+      }}</v-card-title>
       <!-- <v-alert
         v-show="!isLiked"
         icon="mdi-heart"
@@ -12,81 +13,154 @@
         transition="scale-transition"
         >Добавлен в избранное</v-alert
       > -->
-      <v-row v-if="!isLiked" class="mr-3 pb-2" align="center" justify="end">
-        <v-icon
-          style="padding: 5px; border-radius: 100px; box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);"
-          @click="likeCard"
+      <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
+        <v-icon class="cardMiniBtn" @click="sheet = !sheet"
+          >mdi-information-variant</v-icon
         >
-          mdi-heart-outline
-        </v-icon>
-      </v-row>
-      <v-row v-else class="mr-3 pb-2" align="center" justify="end">
-        <v-dialog v-model="dialog" scrollable max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              style="padding: 5px; border-radius: 100px; box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4); margin-right: 10px;"
-              v-bind="attrs"
-              v-on="on"
-              >mdi-format-list-bulleted-square</v-icon
-            >
-          </template>
-
-          <v-card color="#FDF5E6">
-            <v-card-title>Добавить в список</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text style="text-align: center; padding: 50px;">
-              <div v-show="!isListCreating">
-                <div>Ты не создал ни одного списка. Как ты мог!..</div>
-                <div>😔</div>
-                <br />
-                <v-btn color="#59564F" text @click="isListCreating = true">
-                  Создать список
-                </v-btn>
-              </div>
-              <div v-show="isListCreating">
-                <v-text-field
-                  label="Название списка"
-                  :rules="listCreatingRules"
-                  hide-details="auto"
-                  clearable
-                  placeholder="..."
-                  @input="(e) => checkInput(e)"
-                ></v-text-field>
-              </div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-btn
-                v-show="!isListCreating"
-                color="blue darken-1"
-                text
-                @click="dialog = false"
+        <div v-if="!isLiked">
+          <v-icon class="cardBtn" @click="likeCard">
+            mdi-heart-outline
+          </v-icon>
+        </div>
+        <div v-else>
+          <v-dialog v-model="dialog" scrollable max-width="400px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon class="cardMiniBtn" v-bind="attrs" v-on="on"
+                >mdi-playlist-plus</v-icon
               >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <div v-show="isListCreating">
+            </template>
+
+            <v-card color="#FDF5E6">
+              <v-card-title>Добавить в список</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text style="text-align: center; padding: 50px;">
+                <div v-show="!isListCreating">
+                  <div>Ты не создал ни одного списка. Как ты мог!..</div>
+                  <div>😔</div>
+                  <br />
+                  <v-btn color="#59564F" text @click="isListCreating = true">
+                    Создать список
+                  </v-btn>
+                </div>
+                <div v-show="isListCreating">
+                  <v-text-field
+                    label="Название списка"
+                    :rules="listCreatingRules"
+                    hide-details="auto"
+                    clearable
+                    placeholder="..."
+                    @input="(e) => checkInput(e)"
+                  ></v-text-field>
+                </div>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
                 <v-btn
+                  v-show="!isListCreating"
                   color="blue darken-1"
                   text
-                  @click="isListCreating = false"
+                  @click="dialog = false"
                 >
-                  <v-icon>mdi-arrow-left</v-icon>
+                  <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-btn v-show="isInputCorrect" color="blue darken-1" text>
-                  Создать список
-                </v-btn>
-              </div>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-icon
-          style="padding: 5px; border-radius: 100px; box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);"
-          @click="dislikeCard"
-        >
-          mdi-heart
-        </v-icon>
+                <div v-show="isListCreating">
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="isListCreating = false"
+                  >
+                    <v-icon>mdi-arrow-left</v-icon>
+                  </v-btn>
+                  <v-btn v-show="isInputCorrect" color="blue darken-1" text>
+                    Создать список
+                  </v-btn>
+                </div>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-icon class="cardBtn" @click="dislikeCard">
+            mdi-heart
+          </v-icon>
+        </div>
       </v-row>
     </v-card>
+    <div class="text-center">
+      <v-bottom-sheet v-model="sheet">
+        <v-sheet
+          class="text-center"
+          style="overflow-x: auto;"
+          :height="sheetHeight"
+          color="#FDF5E6"
+        >
+          <v-btn class="mt-1" text color="blue" @click="sheet = !sheet">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <div>
+            {{ question.text }}
+          </div>
+          <div
+            v-if="question.ps"
+            class="py-1"
+            style="font-size: 13px; font-weight: 500; opacity: 0.6;"
+          >
+            {{ question.ps }}
+          </div>
+          <br />
+          <b>Сложность</b>
+          <v-progress-linear
+            color="#7DB2F3"
+            class="progressBar"
+            buffer-value="0"
+            :value="question.lvl"
+            stream
+            rounded
+            height="6"
+          ></v-progress-linear>
+          <br />
+          <b>Глубина</b>
+          <v-progress-linear
+            color="#A0BFF3"
+            class="progressBar"
+            buffer-value="0"
+            :value="question.depth"
+            stream
+            rounded
+            height="6"
+          ></v-progress-linear>
+          <br />
+          <b>Близость</b>
+          <v-progress-linear
+            color="#C7BFF3"
+            class="progressBar"
+            buffer-value="0"
+            :value="question.closeness"
+            stream
+            rounded
+            height="6"
+          ></v-progress-linear>
+          <br />
+          <b>Эмоции</b>
+          <v-progress-linear
+            color="#E1B2F3"
+            class="progressBar"
+            buffer-value="0"
+            :value="question.emotions"
+            stream
+            rounded
+            height="6"
+          ></v-progress-linear>
+          <br />
+          <v-chip
+            class="ma-1"
+            v-for="tag in questionTags"
+            :key="tag"
+            small
+            outlined
+            >{{ tag }}</v-chip
+          >
+        </v-sheet>
+      </v-bottom-sheet>
+    </div>
   </div>
 </template>
 
@@ -97,9 +171,9 @@
 export default {
   name: "QuestCard",
   components: {},
+  props: ["question"],
   data: () => ({
     isLiked: false,
-
     isListCreating: false,
     isInputCorrect: false,
     listCreatingRules: [
@@ -107,7 +181,16 @@ export default {
     ],
 
     dialog: false,
+    sheet: false,
+    sheetHeight: 0,
+
+    questionTags: [],
   }),
+  mounted() {
+    this.sheetHeight = document.documentElement.scrollHeight;
+
+    this.questionTags = this.question.topics.split(",");
+  },
   methods: {
     likeCard() {
       this.isLiked = true;
@@ -118,7 +201,6 @@ export default {
     saveToLocalStorage() {},
     checkInput(e) {
       this.listCreatingRules.forEach((rule) => {
-        console.log(rule(e));
         if (rule(e) !== true) {
           this.isInputCorrect = false;
           return;
