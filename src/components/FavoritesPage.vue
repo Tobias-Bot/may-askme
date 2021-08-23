@@ -6,7 +6,7 @@
           flat
           hide-details
           label="Поиск в избранном"
-          placeholder="Давай найдем твой любимый!"
+          placeholder="Найду твой любимый!"
           prepend-inner-icon="mdi-magnify"
           solo-inverted
           clearable
@@ -37,11 +37,18 @@
               `display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`
             "
           >
-            <QuestCard
-              v-for="quest in savedCards"
-              :key="quest"
-              :question="{ index: quest, data: quests[quest] }"
-            />
+            <div v-if="savedCards.length">
+              <QuestCard
+                v-for="quest in searchQuests"
+                :key="quest"
+                :question="{ index: quest, data: quests[quest] }"
+              />
+            </div>
+            <div v-else>
+              <v-card-text class="hintText"
+                >Нет сохраненных вопросов 😕</v-card-text
+              >
+            </div>
           </v-card>
         </v-tab-item>
         <v-tab-item>
@@ -53,7 +60,14 @@
               `display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`
             "
           >
-            // компонент списка
+            <div v-if="savedLists.length">
+              <ListCard v-for="list in savedLists" :key="list.name" :data="list" />
+            </div>
+            <div v-else>
+              <v-card-text class="hintText"
+                >Нет созданных списков 😥</v-card-text
+              >
+            </div>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -66,21 +80,27 @@
 // import chroma from "chroma-js";
 
 import QuestCard from "./QuestCard.vue";
+import ListCard from "./ListCard.vue";
 import questions from "../data/questions/all";
 
 export default {
   name: "FavoritesPage",
   components: {
     QuestCard,
+    ListCard,
   },
   data: () => ({
     pageHeight: 0,
     tabs: null,
 
     quests: questions,
+    searchQuests: [],
+    searchLists: [],
   }),
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
+
+    this.searchQuests = this.savedCards;
   },
   computed: {
     savedCards() {
@@ -92,23 +112,21 @@ export default {
   },
   methods: {
     searchQuestions(text) {
-      let query = [];
+      if (text && text !== " ") {
+        let query = [];
 
-      let cards = this.quests.filter((q, index) => {
-        for (let id = 0; id < this.savedCards.length; id++) {
-          if (index === id) {
-            return true;
+        for (let i = 0; i < this.savedCards.length; i++) {
+          let index = questions.findIndex((q, id) => id === this.savedCards[i]);
+
+          if (~index && questions[index].text.includes(text)) {
+            query.push(index);
           }
         }
-      });
 
-      console.log(cards);
-
-      if (text && text !== " ") {
-        query = cards.map((q) => q.text.includes(text));
+        this.searchQuests = query;
+      } else {
+        this.searchQuests = this.savedCards;
       }
-
-      return query;
     },
   },
 };

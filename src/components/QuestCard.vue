@@ -4,15 +4,6 @@
       <v-card-title class="text" style="font-size: 17px;">{{
         this.question.data.text
       }}</v-card-title>
-      <!-- <v-alert
-        v-show="!isLiked"
-        icon="mdi-heart"
-        elevation="1"
-        dense
-        text
-        transition="scale-transition"
-        >Добавлен в избранное</v-alert
-      > -->
       <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
         <v-icon class="cardMiniBtn" @click="sheet = !sheet"
           >mdi-information-variant</v-icon
@@ -33,11 +24,12 @@
             <v-card color="#FDF5E6">
               <v-card-title>Добавить в список</v-card-title>
               <v-divider></v-divider>
-              <v-card-text style="text-align: center; padding: 30px;">
+              <v-card-text
+                style="text-align: center; padding: 30px; font-weight: 500;"
+              >
                 <div v-show="!isListCreating">
                   <div v-show="!savedLists.length">
-                    <div>Ты не создал ни одного списка. Как ты мог!..</div>
-                    <div>😔</div>
+                    <div>Ты не создал ни одного списка. Как ты мог! 😔</div>
                   </div>
                   <br />
                   <v-btn color="#59564F" text @click="isListCreating = true">

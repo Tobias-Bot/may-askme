@@ -56,6 +56,13 @@ body {
   opacity: 0.9;
 }
 
+.hintText {
+  padding: 30px;
+  text-align: center;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
 .cardBtn {
   padding: 8px;
   margin-right: 10px;
