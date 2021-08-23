@@ -40,7 +40,7 @@
                     <div>😔</div>
                   </div>
                   <br />
-                  <v-btn color="#59564F" text @click="isListCreating = false">
+                  <v-btn color="#59564F" text @click="isListCreating = true">
                     Создать список
                   </v-btn>
                   <br />
@@ -93,7 +93,7 @@
                     v-show="isInputCorrect"
                     color="blue darken-1"
                     text
-                    @click="() => $store.commit('createList', listTitle)"
+                    @click="createNewList"
                   >
                     Создать список
                   </v-btn>
@@ -278,8 +278,26 @@ export default {
         }
       });
     },
-    setCardList(val, list) {
-      console.log(val, list);
+    setCardList(val, title) {
+      let lists = this.savedLists;
+      let quest = this.question.index;
+
+      let i = lists.findIndex((list) => title === list.name);
+
+      if (val) {
+        lists[i].quests.unshift(quest);
+      } else {
+        lists[i].quests.splice(
+          lists[i].quests.findIndex((id) => id === quest),
+          1
+        );
+      }
+
+      this.$store.commit('setLists', lists);
+    },
+    createNewList() {
+      this.$store.commit("createList", this.listTitle);
+      this.isListCreating = false;
     },
   },
 };
