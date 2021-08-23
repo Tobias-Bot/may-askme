@@ -34,7 +34,7 @@
             </v-tab-item>
             <v-tab-item>
               <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
-                <v-card-text>Hello!</v-card-text>
+                <FavoritesPage />
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -75,11 +75,13 @@
 // import chroma from "chroma-js";
 
 import QuestionsPage from "./QuestionsPage.vue";
+import FavoritesPage from "./FavoritesPage.vue";
 
 export default {
   name: "Main",
   components: {
     QuestionsPage,
+    FavoritesPage,
   },
   data: () => ({
     colorTheme: "#F0EAD6",

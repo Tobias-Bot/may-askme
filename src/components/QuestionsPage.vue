@@ -63,7 +63,7 @@ import questions from "../data/questions/all";
 import QuestCard from "./QuestCard.vue";
 
 export default {
-  name: "Main",
+  name: "QuestionPage",
   components: {
     QuestCard,
   },
@@ -82,9 +82,10 @@ export default {
   methods: {
     searchQuestions(text) {
       if (text && text !== " ") {
-        let query = questions.filter(
-          (q) => q.text.includes(text) && q.topics.includes(this.currentTab)
+        let query = this.quests.filter((q) =>
+          q.text.includes(text)
         );
+
         this.quests = query;
       } else {
         this.quests = questions;

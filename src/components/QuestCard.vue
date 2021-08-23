@@ -49,7 +49,7 @@
                     <v-checkbox
                       v-for="list in savedLists"
                       :key="list.name"
-                      :value="list.quests.includes(question.index)"
+                      :input-value="list.quests.includes(question.index)"
                       :label="list.name"
                       dense
                       @change="
@@ -257,13 +257,24 @@ export default {
     },
     dislikeCard() {
       let cards = this.savedCards;
+      let lists = this.savedLists;
+      let qId = this.question.index;
 
       cards.splice(
-        cards.findIndex((c) => this.question.index === c),
+        cards.findIndex((c) => qId === c),
         1
       );
 
+      lists.forEach((list) => {
+        let i = list.quests.findIndex((q) => qId === q);
+
+        if (~i) {
+          list.quests.splice(i, 1);
+        }
+      });
+
       this.$store.commit("setCards", cards);
+      this.$store.commit("setLists", lists);
 
       this.isLiked = false;
     },
@@ -293,7 +304,7 @@ export default {
         );
       }
 
-      this.$store.commit('setLists', lists);
+      this.$store.commit("setLists", lists);
     },
     createNewList() {
       this.$store.commit("createList", this.listTitle);
