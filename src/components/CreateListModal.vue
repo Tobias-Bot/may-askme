@@ -136,6 +136,23 @@ export default {
       this.isListCreating = false;
       this.listTitle = "";
     },
+    setCardList(val, title) {
+      let lists = this.savedLists;
+      let quest = this.question.index;
+
+      let i = lists.findIndex((list) => title === list.name);
+
+      if (val) {
+        lists[i].quests.unshift(quest);
+      } else {
+        lists[i].quests.splice(
+          lists[i].quests.findIndex((id) => id === quest),
+          1
+        );
+      }
+
+      this.$store.commit("setLists", lists);
+    },
   },
 };
 </script>
