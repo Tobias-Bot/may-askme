@@ -43,6 +43,7 @@
             hide-details="auto"
             clearable
             placeholder="..."
+            :value="listTitle"
             @input="(e) => checkInput(e)"
           ></v-text-field>
         </div>
@@ -58,7 +59,16 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <div v-show="isListCreating">
-          <v-btn color="blue darken-1" text @click="isListCreating = false">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="
+              () => {
+                isListCreating = false;
+                isInputCorrect = false;
+              }
+            "
+          >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <v-btn
@@ -111,7 +121,7 @@ export default {
   methods: {
     checkInput(text) {
       this.listCreatingRules.forEach((rule) => {
-        if (rule(text) !== true) {
+        if (!text || typeof rule(text) === "string") {
           this.isInputCorrect = false;
           return;
         } else {
@@ -122,24 +132,9 @@ export default {
     },
     createNewList() {
       this.$store.commit("createList", this.listTitle);
+      this.isInputCorrect = false;
       this.isListCreating = false;
-    },
-    setCardList(val, title) {
-      let lists = this.savedLists;
-      let quest = this.question.index;
-
-      let i = lists.findIndex((list) => title === list.name);
-
-      if (val) {
-        lists[i].quests.unshift(quest);
-      } else {
-        lists[i].quests.splice(
-          lists[i].quests.findIndex((id) => id === quest),
-          1
-        );
-      }
-
-      this.$store.commit("setLists", lists);
+      this.listTitle = "";
     },
   },
 };
