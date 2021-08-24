@@ -5,22 +5,22 @@
         <v-text-field
           flat
           hide-details
-          label="Поиск в избранном"
-          placeholder="Найду твой любимый!"
+          :label="searchInputLabel"
+          placeholder="Что будем искать?"
           prepend-inner-icon="mdi-magnify"
           solo-inverted
           clearable
           dense
           color="white"
-          @input="(e) => searchQuestions(e)"
+          @input="(text) => searchQuestions(text)"
         ></v-text-field>
 
         <template v-slot:extension>
           <v-tabs v-model="tabs" grow show-arrows>
-            <v-tab>
+            <v-tab @click="setTab('все')">
               <span style="font-size: 12px;">все</span>
             </v-tab>
-            <v-tab>
+            <v-tab @click="setTab('списки')">
               <span style="font-size: 12px;">списки</span>
             </v-tab>
           </v-tabs>
@@ -62,7 +62,7 @@
           >
             <div v-if="savedLists.length">
               <ListCard
-                v-for="list in savedLists"
+                v-for="list in searchLists"
                 :key="list.name"
                 :data="list"
               />
@@ -96,6 +96,9 @@ export default {
   data: () => ({
     pageHeight: 0,
     tabs: null,
+    currentTab: "",
+    searchText: "",
+    searchInputLabel: "Поиск по вопросам",
 
     quests: questions,
     searchQuests: [],
@@ -105,6 +108,7 @@ export default {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
 
     this.searchQuests = this.savedCards;
+    this.searchLists = this.savedLists;
   },
   computed: {
     savedCards() {
@@ -116,21 +120,44 @@ export default {
   },
   methods: {
     searchQuestions(text) {
-      if (text && text !== " ") {
-        let query = [];
+      this.searchText = text;
 
-        for (let i = 0; i < this.savedCards.length; i++) {
-          let index = questions.findIndex((q, id) => id === this.savedCards[i]);
+      if (this.searchText && this.searchText !== " ") {
+        if (this.currentTab === "все") {
+          let query = [];
 
-          if (~index && questions[index].text.includes(text)) {
-            query.push(index);
+          for (let i = 0; i < this.savedCards.length; i++) {
+            let index = questions.findIndex(
+              (q, id) => id === this.savedCards[i]
+            );
+
+            if (~index && questions[index].text.includes(this.searchText)) {
+              query.push(index);
+            }
           }
-        }
 
-        this.searchQuests = query;
+          this.searchQuests = query;
+        } else {
+          this.searchInputLabel = "Поиск по спискам";
+
+          let query = this.savedLists.filter((list) =>
+            list.name.includes(this.searchText)
+          );
+
+          this.searchLists = query;
+        }
       } else {
         this.searchQuests = this.savedCards;
+        this.searchLists = this.savedLists;
       }
+    },
+    setTab(topic) {
+      this.currentTab = topic;
+
+      if (topic === "все") this.searchInputLabel = "Найти вопрос";
+      if (topic === "списки") this.searchInputLabel = "Найти список";
+
+      this.searchQuestions();
     },
   },
 };
