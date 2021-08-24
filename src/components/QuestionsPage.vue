@@ -41,6 +41,9 @@
             <v-card-text v-show="topic.description" style="font-size: 13px;">{{
               topic.description
             }}</v-card-text>
+            <div v-show="!quests.length" class="hintText">
+              Ничего не нашлось 🥱
+            </div>
             <QuestCard
               v-for="(quest, i) in quests"
               :key="i"
@@ -72,6 +75,7 @@ export default {
     tabs: null,
     pageHeight: 0,
     currentTab: "все вопросы",
+    searchText: "",
 
     topics,
     quests: questions,
@@ -81,10 +85,10 @@ export default {
   },
   methods: {
     searchQuestions(text) {
+      this.searchText = text;
+
       if (text && text !== " ") {
-        let query = this.quests.filter((q) =>
-          q.text.includes(text)
-        );
+        let query = this.quests.filter((q) => q.text.includes(text));
 
         this.quests = query;
       } else {
@@ -103,7 +107,8 @@ export default {
 
       this.currentTab = topic;
 
-      this.searchQuestions();
+      if (this.searchText && this.searchText !== " ")
+        this.searchQuestions(this.searchText);
     },
   },
 };
