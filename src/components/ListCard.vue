@@ -43,7 +43,8 @@
         <br />
         <br />
         <div class="hintText" style="padding-bottom: 0px;">
-          Удалить также все сохраненные в этом списке вопросы
+          Удалить также все сохраненные в этом списке вопросы из избранного и
+          других списков
         </div>
         <v-switch
           v-model="sheetSwitcher"
@@ -80,25 +81,20 @@ export default {
       let index = lists.findIndex((list) => list.name === this.data.name);
 
       if (this.sheetSwitcher) {
-        let listQuests = this.data.quests;
-        let ids = [];
+        let delQuests = lists[index].quests;
 
-        for (let i = 0; i < cards.length; i++) {
-          for (let j = 0; j < listQuests.length; j++) {
-            if (cards[i] === listQuests[j]) {
-              ids.push(i);
-            }
-          }
-        }
+        cards = cards.filter((card) => !delQuests.includes(card));
 
-        let filteredCards = cards.filter((card) => !ids.includes(card));
+        lists.splice(index, 1);
 
-        console.log(filteredCards);
-
-        this.$store.commit("setCards", filteredCards);
+        lists.forEach((list, i) => {
+          list.quests = list.quests.filter((id) => !delQuests.includes(id));
+        });
+      } else {
+        lists.splice(index, 1);
       }
 
-      lists.splice(index, 1);
+      this.$store.commit("setCards", cards);
       this.$store.commit("setLists", lists);
     },
   },
