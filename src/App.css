@@ -63,6 +63,14 @@ body {
   opacity: 0.8;
 }
 
+.textAlert {
+  padding: 30px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
 .cardBtn {
   padding: 8px;
   margin-right: 10px;

@@ -61,7 +61,11 @@
             "
           >
             <div v-if="savedLists.length">
-              <ListCard v-for="list in savedLists" :key="list.name" :data="list" />
+              <ListCard
+                v-for="list in savedLists"
+                :key="list.name"
+                :data="list"
+              />
             </div>
             <div v-else>
               <v-card-text class="hintText"

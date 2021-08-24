@@ -102,6 +102,8 @@ export default {
       }
 
       this.currentTab = topic;
+
+      this.searchQuestions();
     },
   },
 };
