@@ -24,7 +24,17 @@
         :height="sheetHeight"
         color="#FDF5E6"
       >
-        <v-btn class="mt-2" text color="blue" @click="sheet = !sheet">
+        <v-btn
+          class="mt-2"
+          text
+          color="blue"
+          @click="
+            () => {
+              sheet = !sheet;
+              sheetSwitcher = false;
+            }
+          "
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <div class="textAlert">Ты правда хочешь удалить этот список? 😯</div>
@@ -35,7 +45,16 @@
             >
           </v-col>
           <v-col>
-            <v-btn outlined rounded elevation="24" @click="sheet = !sheet"
+            <v-btn
+              outlined
+              rounded
+              elevation="24"
+              @click="
+                () => {
+                  sheet = !sheet;
+                  sheetSwitcher = false;
+                }
+              "
               >Нет</v-btn
             >
           </v-col>
@@ -96,6 +115,8 @@ export default {
 
       this.$store.commit("setCards", cards);
       this.$store.commit("setLists", lists);
+
+      this.sheetSwitcher = false;
     },
   },
 };
