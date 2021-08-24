@@ -83,15 +83,17 @@ export default {
     QuestionsPage,
     FavoritesPage,
   },
-  data: () => ({
-    colorTheme: "#F0EAD6",
-    toolbarHeight: "55",
-    footerHeight: "130",
-    mainScreenHeight: "0",
-    tab: null,
+  data() {
+    return {
+      colorTheme: "#F0EAD6",
+      toolbarHeight: "55",
+      footerHeight: "130",
+      mainScreenHeight: "0",
+      tab: null,
 
-    show: false,
-  }),
+      show: false,
+    };
+  },
   created() {
     let savedCards = JSON.parse(localStorage.getItem("savedCards"));
     let savedLists = JSON.parse(localStorage.getItem("savedLists"));

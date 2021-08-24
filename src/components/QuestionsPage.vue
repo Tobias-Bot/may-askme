@@ -42,7 +42,7 @@
               topic.description
             }}</v-card-text>
             <div v-show="!quests.length" class="hintText">
-              Ничего не нашлось 🥱
+              Ничего не нашлось 😴
             </div>
             <QuestCard
               v-for="(quest, i) in quests"
@@ -70,16 +70,18 @@ export default {
   components: {
     QuestCard,
   },
-  data: () => ({
-    colorTheme: "#F0EAD6",
-    tabs: null,
-    pageHeight: 0,
-    currentTab: "все вопросы",
-    searchText: "",
+  data() {
+    return {
+      colorTheme: "#F0EAD6",
+      tabs: null,
+      pageHeight: 0,
+      currentTab: "все вопросы",
+      searchText: "",
 
-    topics,
-    quests: questions,
-  }),
+      topics,
+      quests: questions,
+    };
+  },
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
   },

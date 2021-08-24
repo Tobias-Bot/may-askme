@@ -93,17 +93,19 @@ export default {
     QuestCard,
     ListCard,
   },
-  data: () => ({
-    pageHeight: 0,
-    tabs: null,
-    currentTab: "",
-    searchText: "",
-    searchInputLabel: "Поиск по вопросам",
+  data() {
+    return {
+      pageHeight: 0,
+      tabs: null,
+      currentTab: "",
+      searchText: "",
+      searchInputLabel: "Поиск по вопросам",
 
-    quests: questions,
-    searchQuests: [],
-    searchLists: [],
-  }),
+      quests: questions,
+      searchQuests: [],
+      searchLists: [],
+    };
+  },
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
 

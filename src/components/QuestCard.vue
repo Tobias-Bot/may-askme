@@ -1,9 +1,12 @@
 <template>
   <div style="margin-bottom: 20px;">
     <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
-      <v-card-title class="text" style="font-size: 17px;" @click="sheet = !sheet">{{
-        this.question.data.text
-      }}</v-card-title>
+      <v-card-title
+        class="text"
+        style="font-size: 17px;"
+        @click="sheet = !sheet"
+        >{{ this.question.data.text }}</v-card-title
+      >
       <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
         <v-icon class="cardMiniBtn" @click="sheet = !sheet"
           >mdi-information-variant</v-icon
@@ -14,85 +17,7 @@
           </v-icon>
         </div>
         <div v-else>
-          <v-dialog v-model="dialog" scrollable max-width="400px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon class="cardMiniBtn" v-bind="attrs" v-on="on"
-                >mdi-playlist-plus</v-icon
-              >
-            </template>
-
-            <v-card color="#FDF5E6">
-              <v-card-title>Добавить в список</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text
-                style="text-align: center; padding: 30px; font-weight: 500;"
-              >
-                <div v-show="!isListCreating">
-                  <div v-show="!savedLists.length">
-                    <div>Ты не создал ни одного списка. Как ты мог! 😔</div>
-                  </div>
-                  <br />
-                  <v-btn color="#59564F" text @click="isListCreating = true">
-                    Создать список
-                  </v-btn>
-                  <br />
-                  <br />
-                  <div v-show="savedLists.length">
-                    <v-checkbox
-                      v-for="list in savedLists"
-                      :key="list.name"
-                      :input-value="list.quests.includes(question.index)"
-                      :label="list.name"
-                      dense
-                      @change="
-                        (e) => {
-                          setCardList(e, list.name);
-                        }
-                      "
-                    ></v-checkbox>
-                  </div>
-                </div>
-                <div v-show="isListCreating">
-                  <v-text-field
-                    label="Название списка"
-                    :rules="listCreatingRules"
-                    hide-details="auto"
-                    clearable
-                    placeholder="..."
-                    @input="(e) => checkInput(e)"
-                  ></v-text-field>
-                </div>
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn
-                  v-show="!isListCreating"
-                  color="blue darken-1"
-                  text
-                  @click="dialog = false"
-                >
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-                <div v-show="isListCreating">
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="isListCreating = false"
-                  >
-                    <v-icon>mdi-arrow-left</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-show="isInputCorrect"
-                    color="blue darken-1"
-                    text
-                    @click="createNewList"
-                  >
-                    Создать список
-                  </v-btn>
-                </div>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <CreateListModal :dialog.sync="dialog" :question="question" />
           <v-icon class="cardBtn" @click="dislikeCard">
             mdi-heart
           </v-icon>
@@ -184,34 +109,26 @@
 // import bridge from "@vkontakte/vk-bridge";
 // import chroma from "chroma-js";
 
+import CreateListModal from "./CreateListModal";
+
 export default {
   name: "QuestCard",
-  components: {},
+  components: {
+    CreateListModal,
+  },
   props: ["question"],
-  data: () => ({
-    listTitle: "",
-    isListCreating: false,
-    isInputCorrect: false,
-    listCreatingRules: [
-      (value) => !!value || "Придумай название для списка вопросов",
-    ],
+  data() {
+    return {
+      dialog: false,
+      sheet: false,
+      sheetHeight: 0,
 
-    dialog: false,
-    sheet: false,
-    sheetHeight: 0,
-
-    questionTags: [],
-  }),
+      questionTags: [],
+    };
+  },
   mounted() {
     this.sheetHeight = document.documentElement.scrollHeight;
     this.questionTags = this.question.data.topics.split(",");
-
-    this.listCreatingRules.push((value) => {
-      return (
-        !~this.savedLists.findIndex((list) => list.name === value) ||
-        "Такой список у тебя уже есть"
-      );
-    });
   },
   computed: {
     savedCards() {
@@ -269,38 +186,6 @@ export default {
       this.$store.commit("setLists", lists);
 
       this.isLiked = false;
-    },
-    checkInput(text) {
-      this.listCreatingRules.forEach((rule) => {
-        if (rule(text) !== true) {
-          this.isInputCorrect = false;
-          return;
-        } else {
-          this.isInputCorrect = true;
-          this.listTitle = text;
-        }
-      });
-    },
-    setCardList(val, title) {
-      let lists = this.savedLists;
-      let quest = this.question.index;
-
-      let i = lists.findIndex((list) => title === list.name);
-
-      if (val) {
-        lists[i].quests.unshift(quest);
-      } else {
-        lists[i].quests.splice(
-          lists[i].quests.findIndex((id) => id === quest),
-          1
-        );
-      }
-
-      this.$store.commit("setLists", lists);
-    },
-    createNewList() {
-      this.$store.commit("createList", this.listTitle);
-      this.isListCreating = false;
     },
   },
 };
