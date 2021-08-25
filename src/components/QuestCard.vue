@@ -54,6 +54,7 @@
           </div>
           <br />
           <b>Сложность</b>
+          <div style="font-size: 12px;">Сложность ответа на вопрос</div>
           <v-progress-linear
             color="#7DB2F3"
             class="progressBar"
@@ -65,6 +66,7 @@
           ></v-progress-linear>
           <br />
           <b>Глубина</b>
+          <div style="font-size: 12px;">Насколько человек может открыть при ответе</div>
           <v-progress-linear
             color="#A0BFF3"
             class="progressBar"
@@ -76,6 +78,7 @@
           ></v-progress-linear>
           <br />
           <b>Близость</b>
+          <div style="font-size: 12px;">Уровень близости к человеку при разговоре</div>
           <v-progress-linear
             color="#C7BFF3"
             class="progressBar"
@@ -87,6 +90,7 @@
           ></v-progress-linear>
           <br />
           <b>Эмоции</b>
+          <div style="font-size: 12px;">Насколько сильные эмоции вызывает вопрос</div>
           <v-progress-linear
             color="#E1B2F3"
             class="progressBar"

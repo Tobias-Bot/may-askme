@@ -28,32 +28,74 @@
               }})</v-card-title
             >
             <v-divider></v-divider>
-            <v-card-text
-              style="text-align: center; padding: 20px; font-weight: 500;"
-            >
-              <v-btn color="#59564F" text @click="isListEditing = true">
-                Добавить вопросы
-              </v-btn>
-              <br />
-            </v-card-text>
-            <div v-if="data.quests.length">
-              <QuestCard
-                v-for="quest in data.quests"
-                :key="quest"
-                :list="data"
-                :question="{ index: quest, data: quests[quest] }"
-                :listView="true"
-              />
-            </div>
-            <div v-else>
-              <v-card-text class="hintText"
-                >В этом списке нет вопросов 🧐</v-card-text
+            <div v-show="!isListEditing">
+              <v-card-text
+                style="text-align: center; padding: 20px; font-weight: 500;"
               >
+                <v-btn color="#59564F" text @click="isListEditing = true">
+                  Добавить вопросы
+                </v-btn>
+                <br />
+              </v-card-text>
+              <div v-if="data.quests.length">
+                <QuestCard
+                  v-for="quest in data.quests"
+                  :key="quest"
+                  :list="data"
+                  :question="{ index: quest, data: quests[quest] }"
+                  :listView="true"
+                />
+              </div>
+              <div v-else>
+                <v-card-text class="hintText"
+                  >В этом списке нет вопросов 🧐</v-card-text
+                >
+              </div>
+            </div>
+            <div v-show="isListEditing" style="padding: 20px 0;">
+              <div v-show="notInList.length">
+                <v-row
+                  align="center"
+                  class="pl-4 pr-4"
+                  v-for="quest in notInList"
+                  :key="quest"
+                >
+                  <v-col cols="2">
+                    <v-checkbox
+                      :input-value="data.quests.includes(quest)"
+                      @change="addQuest(data.name)"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="10">
+                    <span style="font-size: 15px; font-weight: 500;">{{
+                      quests[quest].text
+                    }}</span>
+                  </v-col>
+                </v-row>
+              </div>
+              <div v-show="!notInList.length">
+                <v-card-text class="hintText"
+                  >Все вопросы из избранного уже в этом списке 😌</v-card-text
+                >
+              </div>
             </div>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="blue darken-1" text @click="dialogList = false">
+              <v-btn
+                v-show="!isListEditing"
+                color="blue darken-1"
+                text
+                @click="dialogList = false"
+              >
                 <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-btn
+                v-show="isListEditing"
+                color="blue darken-1"
+                text
+                @click="isListEditing = false"
+              >
+                <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -150,6 +192,9 @@ export default {
   computed: {
     savedCards() {
       return this.$store.getters.getCards;
+    },
+    notInList() {
+      return this.savedCards.filter((q) => !this.data.quests.includes(q));
     },
   },
   methods: {
