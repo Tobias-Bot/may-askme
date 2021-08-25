@@ -15,7 +15,7 @@
         <v-icon class="cardMiniBtn" @click="sheet = !sheet"
           >mdi-trash-can-outline</v-icon
         >
-        <v-dialog v-model="dialogList" scrollable>
+        <v-dialog v-model="dialogList" scrollable fullscreen>
           <template v-slot:activator="{ on, attrs }">
             <v-icon class="cardBtn" v-bind="attrs" v-on="on">
               mdi-format-list-bulleted-square
@@ -28,12 +28,12 @@
               }})</v-card-title
             >
             <v-divider></v-divider>
-            <div v-show="!isListEditing">
+            <div v-show="!isListEditing" style="overflow-y: auto;">
               <v-card-text
                 style="text-align: center; padding: 20px; font-weight: 500;"
               >
                 <v-btn color="#59564F" text @click="isListEditing = true">
-                  Добавить вопросы
+                  Редактировать
                 </v-btn>
                 <br />
               </v-card-text>
@@ -52,18 +52,27 @@
                 >
               </div>
             </div>
-            <div v-show="isListEditing" style="padding: 20px 0;">
-              <div v-show="notInList.length">
+            <div
+              v-show="isListEditing"
+              style="padding: 20px 0; overflow-y: auto;"
+            >
+              <div v-if="!notInList.length && !savedCards.length">
+                <v-card-text class="hintText"
+                  >В избранном нет ни одного вопроса для добавления в этот
+                  список 🙄</v-card-text
+                >
+              </div>
+              <div v-else>
                 <v-row
                   align="center"
                   class="pl-4 pr-4"
-                  v-for="quest in notInList"
+                  v-for="quest in savedCards"
                   :key="quest"
                 >
                   <v-col cols="2">
                     <v-checkbox
                       :input-value="data.quests.includes(quest)"
-                      @change="addQuest(data.name)"
+                      @change="(e) => setQuestToList(e, quest)"
                     ></v-checkbox>
                   </v-col>
                   <v-col cols="10">
@@ -72,11 +81,6 @@
                     }}</span>
                   </v-col>
                 </v-row>
-              </div>
-              <div v-show="!notInList.length">
-                <v-card-text class="hintText"
-                  >Все вопросы из избранного уже в этом списке 😌</v-card-text
-                >
               </div>
             </div>
             <v-divider></v-divider>
@@ -193,6 +197,9 @@ export default {
     savedCards() {
       return this.$store.getters.getCards;
     },
+    savedLists() {
+      return this.$store.getters.getLists;
+    },
     notInList() {
       return this.savedCards.filter((q) => !this.data.quests.includes(q));
     },
@@ -222,7 +229,24 @@ export default {
 
       this.sheetSwitcher = false;
     },
-    addQuest() {},
+    setQuestToList(value, quest) {
+      let list = this.data.quests;
+      let lists = this.savedLists;
+
+      if (value) {
+        list.unshift(quest);
+      } else {
+        list.splice(
+          list.findIndex((id) => id === quest),
+          1
+        );
+      }
+
+      let index = lists.findIndex((list) => list.name === this.data.name);
+      lists[index] = this.data;
+
+      this.$store.commit("setLists", lists);
+    },
   },
 };
 </script>

@@ -24,11 +24,6 @@
             </v-icon>
           </div>
         </div>
-        <div v-else>
-          <v-icon class="cardBtn" @click="deleteQuestFromList(list.name)">
-            mdi-close-thick
-          </v-icon>
-        </div>
       </v-row>
     </v-card>
     <div class="text-center">
@@ -66,7 +61,9 @@
           ></v-progress-linear>
           <br />
           <b>Глубина</b>
-          <div style="font-size: 12px;">Насколько человек может открыть при ответе</div>
+          <div style="font-size: 12px;">
+            Насколько человек может открыть при ответе
+          </div>
           <v-progress-linear
             color="#A0BFF3"
             class="progressBar"
@@ -78,7 +75,9 @@
           ></v-progress-linear>
           <br />
           <b>Близость</b>
-          <div style="font-size: 12px;">Уровень близости к человеку при разговоре</div>
+          <div style="font-size: 12px;">
+            Уровень близости к человеку при разговоре
+          </div>
           <v-progress-linear
             color="#C7BFF3"
             class="progressBar"
@@ -90,7 +89,9 @@
           ></v-progress-linear>
           <br />
           <b>Эмоции</b>
-          <div style="font-size: 12px;">Насколько сильные эмоции вызывает вопрос</div>
+          <div style="font-size: 12px;">
+            Насколько сильные эмоции вызывает вопрос
+          </div>
           <v-progress-linear
             color="#E1B2F3"
             class="progressBar"
