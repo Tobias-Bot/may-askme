@@ -1,11 +1,13 @@
 <template>
-  <v-dialog v-model="dialogSwitch" scrollable max-width="400px">
+  <v-dialog v-model="dialogSwitch" scrollable>
     <template v-slot:activator="{ on, attrs }">
-      <v-icon class="cardMiniBtn" v-bind="attrs" v-on="on"
+      <v-icon v-if="question" class="cardMiniBtn" v-bind="attrs" v-on="on"
         >mdi-playlist-plus</v-icon
       >
+      <v-btn v-else color="#59564F" text v-bind="attrs" v-on="on">
+        Создать список
+      </v-btn>
     </template>
-
     <v-card color="#FDF5E6">
       <v-card-title>Добавить в список</v-card-title>
       <v-divider></v-divider>
@@ -21,7 +23,7 @@
           </v-btn>
           <br />
           <br />
-          <div v-show="savedLists.length">
+          <div v-if="question && savedLists.length">
             <v-checkbox
               v-for="list in savedLists"
               :key="list.name"
@@ -60,16 +62,24 @@
         </v-btn>
         <div v-show="isListCreating">
           <v-btn
+            v-if="question"
             color="blue darken-1"
             text
             @click="
               () => {
                 isListCreating = false;
-                isInputCorrect = false;
               }
             "
           >
             <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <v-btn
+            v-else
+            color="blue darken-1"
+            text
+            @click="dialogSwitch = !dialogSwitch"
+          >
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-btn
             v-show="isInputCorrect"
@@ -102,6 +112,9 @@ export default {
       ],
     };
   },
+  created() {
+    if (!this.question) this.isListCreating = true;
+  },
   mounted() {
     this.listCreatingRules.push((value) => {
       return (
@@ -132,9 +145,9 @@ export default {
     },
     createNewList() {
       this.$store.commit("createList", this.listTitle);
-      this.isInputCorrect = false;
-      this.isListCreating = false;
       this.listTitle = "";
+      this.isInputCorrect = false;
+      if (!this.question) this.dialogSwitch = !this.dialogSwitch;
     },
     setCardList(val, title) {
       let lists = this.savedLists;

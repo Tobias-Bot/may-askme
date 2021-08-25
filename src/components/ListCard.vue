@@ -106,7 +106,7 @@ export default {
 
         lists.splice(index, 1);
 
-        lists.forEach((list, i) => {
+        lists.forEach((list) => {
           list.quests = list.quests.filter((id) => !delQuests.includes(id));
         });
       } else {

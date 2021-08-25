@@ -60,6 +60,7 @@
               `display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`
             "
           >
+            <CreateListModal :dialog.sync="dialog" />
             <div v-if="savedLists.length">
               <ListCard
                 v-for="list in searchLists"
@@ -71,6 +72,7 @@
               <v-card-text class="hintText"
                 >Нет созданных списков 😥</v-card-text
               >
+              <br />
             </div>
           </v-card>
         </v-tab-item>
@@ -85,6 +87,7 @@
 
 import QuestCard from "./QuestCard.vue";
 import ListCard from "./ListCard.vue";
+import CreateListModal from "./CreateListModal";
 import questions from "../data/questions/all";
 
 export default {
@@ -92,6 +95,7 @@ export default {
   components: {
     QuestCard,
     ListCard,
+    CreateListModal,
   },
   data() {
     return {
@@ -100,6 +104,7 @@ export default {
       currentTab: "",
       searchText: "",
       searchInputLabel: "Поиск по вопросам",
+      dialog: false,
 
       quests: questions,
       searchQuests: [],

@@ -17,7 +17,7 @@
           </v-icon>
         </div>
         <div v-else>
-          <CreateListModal :dialog.sync="dialog" :question="question" />
+          <CreateListModal :dialog.sync="dialog" :question="this.question" />
           <v-icon class="cardBtn" @click="dislikeCard">
             mdi-heart
           </v-icon>
