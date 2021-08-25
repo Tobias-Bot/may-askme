@@ -4,14 +4,16 @@
       <v-icon v-if="question" class="cardMiniBtn" v-bind="attrs" v-on="on"
         >mdi-playlist-plus</v-icon
       >
-      <v-btn v-else color="#59564F" text v-bind="attrs" v-on="on">
-        Создать список
-      </v-btn>
+      <div v-else style="width: 100%; text-align: center; padding: 20px;">
+        <v-btn color="#59564F" text v-bind="attrs" v-on="on">
+          Создать список
+        </v-btn>
+      </div>
     </template>
     <v-card color="#FDF5E6">
       <v-card-title>Добавить в список</v-card-title>
       <v-divider></v-divider>
-      <v-card-text style="text-align: center; padding: 30px; font-weight: 500;">
+      <v-card-text style="text-align: center; padding: 20px; font-weight: 500;">
         <div v-show="!isListCreating">
           <div v-show="!savedLists.length">
             <div>Ты не создал ни одного списка</div>
@@ -148,6 +150,9 @@ export default {
       this.listTitle = "";
       this.isInputCorrect = false;
       if (!this.question) this.dialogSwitch = !this.dialogSwitch;
+      else {
+        this.isListCreating = false;
+      }
     },
     setCardList(val, title) {
       let lists = this.savedLists;
