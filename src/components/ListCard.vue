@@ -1,19 +1,63 @@
 <template>
   <div style="margin-bottom: 20px;">
-    <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
-      <v-card-title class="text" style="font-size: 17px;">{{
-        this.data.name
-      }}</v-card-title>
-      <v-card-subtitle
+    <v-card flat color="#FDF5E6" style="margin: 10px;">
+      <v-card-title
+        class="text"
+        style="font-size: 17px;"
+        @click="dialogList = true"
+        >{{ data.name }}</v-card-title
+      >
+      <v-card-subtitle v-if="this.data.quests.length"
         >Вопросов в списке: {{ this.data.quests.length }}</v-card-subtitle
       >
+      <v-card-subtitle v-else>Пустой</v-card-subtitle>
       <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
         <v-icon class="cardMiniBtn" @click="sheet = !sheet"
           >mdi-trash-can-outline</v-icon
         >
-        <v-icon class="cardBtn">
-          mdi-format-list-bulleted-square
-        </v-icon>
+        <v-dialog v-model="dialogList" scrollable>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon class="cardBtn" v-bind="attrs" v-on="on">
+              mdi-format-list-bulleted-square
+            </v-icon>
+          </template>
+          <v-card color="#F0EAD6">
+            <v-card-title style="font-size: 16px;"
+              >{{ this.data.name }} ({{
+                this.data.quests.length
+              }})</v-card-title
+            >
+            <v-divider></v-divider>
+            <v-card-text
+              style="text-align: center; padding: 20px; font-weight: 500;"
+            >
+              <v-btn color="#59564F" text @click="isListEditing = true">
+                Добавить вопросы
+              </v-btn>
+              <br />
+            </v-card-text>
+            <div v-if="data.quests.length">
+              <QuestCard
+                v-for="quest in data.quests"
+                :key="quest"
+                :list="data"
+                :question="{ index: quest, data: quests[quest] }"
+                :listView="true"
+              />
+            </div>
+            <div v-else>
+              <v-card-text class="hintText"
+                >В этом списке нет вопросов 🧐</v-card-text
+              >
+            </div>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn color="blue darken-1" text @click="dialogList = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-row>
     </v-card>
 
@@ -80,18 +124,33 @@
 // import bridge from "@vkontakte/vk-bridge";
 // import chroma from "chroma-js";
 
+import QuestCard from "./QuestCard.vue";
+
+import questions from "../data/questions/all";
+
 export default {
   name: "ListCard",
   props: ["data"],
-  components: {},
+  components: {
+    QuestCard,
+  },
   data: () => ({
     alert: true,
     sheet: false,
     sheetSwitcher: false,
+    dialogList: false,
+    isListEditing: false,
     sheetHeight: 0,
+
+    quests: questions,
   }),
   mounted() {
     this.sheetHeight = document.documentElement.scrollHeight - 200;
+  },
+  computed: {
+    savedCards() {
+      return this.$store.getters.getCards;
+    },
   },
   methods: {
     deleteList() {
@@ -118,6 +177,7 @@ export default {
 
       this.sheetSwitcher = false;
     },
+    addQuest() {},
   },
 };
 </script>

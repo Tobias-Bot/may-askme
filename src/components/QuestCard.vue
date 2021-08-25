@@ -1,25 +1,32 @@
 <template>
   <div style="margin-bottom: 20px;">
-    <v-card flat color="#FDF5E6" style="margin: 10px; border-radius: 10px;">
+    <v-card flat color="#FDF5E6" style="margin: 10px;">
       <v-card-title
         class="text"
-        style="font-size: 17px;"
-        @click="sheet = !sheet"
+        style="font-size: 16px; line-height: 1.5;"
+        @click="sheet = true"
         >{{ this.question.data.text }}</v-card-title
       >
       <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
-        <v-icon class="cardMiniBtn" @click="sheet = !sheet"
+        <v-icon class="cardMiniBtn" @click="sheet = true"
           >mdi-information-variant</v-icon
         >
-        <div v-if="!this.isLike">
-          <v-icon class="cardBtn" @click="likeCard">
-            mdi-heart-outline
-          </v-icon>
+        <div v-if="!listView">
+          <div v-if="!this.isLike">
+            <v-icon class="cardBtn" @click="likeCard">
+              mdi-heart-outline
+            </v-icon>
+          </div>
+          <div v-else>
+            <CreateListModal :dialog.sync="dialog" :question="this.question" />
+            <v-icon class="cardBtn" @click="dislikeCard">
+              mdi-heart
+            </v-icon>
+          </div>
         </div>
         <div v-else>
-          <CreateListModal :dialog.sync="dialog" :question="this.question" />
-          <v-icon class="cardBtn" @click="dislikeCard">
-            mdi-heart
+          <v-icon class="cardBtn" @click="deleteQuestFromList(list.name)">
+            mdi-close-thick
           </v-icon>
         </div>
       </v-row>
@@ -116,7 +123,7 @@ export default {
   components: {
     CreateListModal,
   },
-  props: ["question"],
+  props: ["question", "listView", "list"],
   data() {
     return {
       dialog: false,
@@ -186,6 +193,19 @@ export default {
       this.$store.commit("setLists", lists);
 
       this.isLiked = false;
+    },
+    deleteQuestFromList(title) {
+      let lists = this.savedLists;
+      let quest = this.question.index;
+
+      let i = lists.findIndex((list) => title === list.name);
+
+      lists[i].quests.splice(
+        lists[i].quests.findIndex((id) => id === quest),
+        1
+      );
+
+      this.$store.commit("setLists", lists);
     },
   },
 };
