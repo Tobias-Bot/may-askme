@@ -28,89 +28,90 @@
     </v-card>
     <div class="text-center">
       <v-bottom-sheet v-model="sheet">
-        <v-sheet
-          class="text-center"
-          style="overflow-x: auto;"
-          :height="sheetHeight"
-          color="#FDF5E6"
-        >
+        <v-sheet class="text-center" color="#FDF5E6">
           <v-btn class="mt-2" text color="blue" @click="sheet = !sheet">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <div class="mt-2">
-            {{ question.data.text }}
-          </div>
           <div
-            v-if="question.data.ps"
-            class="py-1"
-            style="font-size: 13px; font-weight: 500; opacity: 0.6;"
+            :style="
+              `max-height: ${sheetHeight}px; overflow-y: auto; padding-bottom: 20px;`
+            "
           >
-            {{ question.data.ps }}
+            <div class="mt-2">
+              {{ question.data.text }}
+            </div>
+            <div
+              v-if="question.data.ps"
+              class="py-1"
+              style="font-size: 13px; font-weight: 500; opacity: 0.6;"
+            >
+              {{ question.data.ps }}
+            </div>
+            <br />
+            <b>Сложность</b>
+            <div style="font-size: 12px;">Сложность ответа на вопрос</div>
+            <v-progress-linear
+              color="#7DB2F3"
+              class="progressBar"
+              buffer-value="0"
+              :value="question.data.lvl"
+              stream
+              rounded
+              height="6"
+            ></v-progress-linear>
+            <br />
+            <b>Глубина</b>
+            <div style="font-size: 12px;">
+              Насколько человек может открыть при ответе
+            </div>
+            <v-progress-linear
+              color="#A0BFF3"
+              class="progressBar"
+              buffer-value="0"
+              :value="question.data.depth"
+              stream
+              rounded
+              height="6"
+            ></v-progress-linear>
+            <br />
+            <b>Близость</b>
+            <div style="font-size: 12px;">
+              Уровень близости к человеку при разговоре
+            </div>
+            <v-progress-linear
+              color="#C7BFF3"
+              class="progressBar"
+              buffer-value="0"
+              :value="question.data.closeness"
+              stream
+              rounded
+              height="6"
+            ></v-progress-linear>
+            <br />
+            <b>Эмоции</b>
+            <div style="font-size: 12px;">
+              Насколько сильные эмоции вызывает вопрос
+            </div>
+            <v-progress-linear
+              color="#E1B2F3"
+              class="progressBar"
+              buffer-value="0"
+              :value="question.data.emotions"
+              stream
+              rounded
+              height="6"
+            ></v-progress-linear>
+            <br />
+            <br />
+            <v-chip
+              class="ma-1"
+              v-for="tag in questionTags"
+              :key="tag"
+              small
+              outlined
+              >{{ tag }}</v-chip
+            >
           </div>
-          <br />
-          <b>Сложность</b>
-          <div style="font-size: 12px;">Сложность ответа на вопрос</div>
-          <v-progress-linear
-            color="#7DB2F3"
-            class="progressBar"
-            buffer-value="0"
-            :value="question.data.lvl"
-            stream
-            rounded
-            height="6"
-          ></v-progress-linear>
-          <br />
-          <b>Глубина</b>
-          <div style="font-size: 12px;">
-            Насколько человек может открыть при ответе
-          </div>
-          <v-progress-linear
-            color="#A0BFF3"
-            class="progressBar"
-            buffer-value="0"
-            :value="question.data.depth"
-            stream
-            rounded
-            height="6"
-          ></v-progress-linear>
-          <br />
-          <b>Близость</b>
-          <div style="font-size: 12px;">
-            Уровень близости к человеку при разговоре
-          </div>
-          <v-progress-linear
-            color="#C7BFF3"
-            class="progressBar"
-            buffer-value="0"
-            :value="question.data.closeness"
-            stream
-            rounded
-            height="6"
-          ></v-progress-linear>
-          <br />
-          <b>Эмоции</b>
-          <div style="font-size: 12px;">
-            Насколько сильные эмоции вызывает вопрос
-          </div>
-          <v-progress-linear
-            color="#E1B2F3"
-            class="progressBar"
-            buffer-value="0"
-            :value="question.data.emotions"
-            stream
-            rounded
-            height="6"
-          ></v-progress-linear>
-          <br />
-          <br />
-          <v-chip
-            class="ma-1"
-            v-for="tag in questionTags"
-            :key="tag"
-            small
-            outlined
-            >{{ tag }}</v-chip
-          >
         </v-sheet>
       </v-bottom-sheet>
     </div>
