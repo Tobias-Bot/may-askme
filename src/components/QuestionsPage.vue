@@ -181,8 +181,9 @@ export default {
 
       this.currentTab = topic;
 
-      this.searchText = "";
-      this.resetFilterProps();
+      // if (this.propsAreChanged) {
+      //   this.resetFilterProps();
+      // }
 
       if (this.searchText && this.searchText !== " ")
         this.searchQuestions(this.searchText);
@@ -207,6 +208,8 @@ export default {
       };
 
       this.filterProps = filterProps;
+
+      this.searchQuestions(this.searchText);
     },
   },
 };
