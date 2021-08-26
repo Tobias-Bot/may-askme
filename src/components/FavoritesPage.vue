@@ -3,7 +3,6 @@
     <v-card>
       <v-toolbar color="#FDF5E6" style="padding-top: 5px;">
         <v-text-field
-          flat
           hide-details
           :label="searchInputLabel"
           placeholder="Что будем искать?"
@@ -112,7 +111,7 @@ export default {
     };
   },
   mounted() {
-    this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
+    this.pageHeight = document.documentElement.scrollHeight - 110 - 159;
 
     this.searchQuests = this.savedCards;
     this.searchLists = this.savedLists;

@@ -2,19 +2,80 @@
   <div>
     <v-card>
       <v-toolbar color="#FDF5E6" style="padding-top: 5px;">
-        <v-text-field
-          flat
-          hide-details
-          label="Найти вопрос"
-          placeholder="Я знаю, о чем ты хочешь поговорить"
-          prepend-inner-icon="mdi-magnify"
-          solo-inverted
-          clearable
-          dense
-          color="white"
-          @input="(e) => searchQuestions(e)"
-        ></v-text-field>
-
+        <v-row dense>
+          <v-col cols="9">
+            <v-text-field
+              hide-details
+              label="Найти вопрос"
+              placeholder="Я знаю, о чем ты хочешь поговорить"
+              prepend-inner-icon="mdi-magnify"
+              solo-inverted
+              clearable
+              dense
+              :value="searchText"
+              color="white"
+              @input="(e) => searchQuestions(e)"
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-dialog v-model="dialogSwitch" scrollable>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="#FDF5E6" block v-bind="attrs" v-on="on"
+                  ><v-icon v-show="!propsAreChanged" color="#717171"
+                    >mdi-filter-variant</v-icon
+                  >
+                  <v-icon v-show="propsAreChanged" color="black"
+                    >mdi-filter-variant-minus</v-icon
+                  >
+                </v-btn>
+              </template>
+              <v-card color="#FDF5E6">
+                <v-card-title>Фильтр</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text
+                  style="text-align: center; padding: 20px; font-weight: 500;"
+                >
+                  <div
+                    v-for="prop in questProps"
+                    :key="prop.name"
+                    style="text-align: left"
+                  >
+                    <b>{{ prop.name }} ({{ filterProps[prop.propName] }})</b>
+                    <v-slider
+                      dense
+                      :hint="prop.hint"
+                      max="100"
+                      min="0"
+                      step="5"
+                      :value="filterProps[prop.propName]"
+                      persistent-hint
+                      @change="(value) => setFilterProps(value, prop.propName)"
+                    ></v-slider>
+                    <br />
+                  </div>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialogSwitch = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-btn
+                    v-show="propsAreChanged"
+                    color="blue darken-1"
+                    text
+                    @click="resetFilterProps"
+                  >
+                    сбросить
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-col>
+        </v-row>
         <template v-slot:extension>
           <v-tabs v-model="tabs" grow show-arrows>
             <v-tab
@@ -62,6 +123,7 @@
 
 import topics from "../data/topics";
 import questions from "../data/questions/all";
+import questProps from "../data/questProps";
 
 import QuestCard from "./QuestCard.vue";
 
@@ -77,13 +139,23 @@ export default {
       pageHeight: 0,
       currentTab: "все вопросы",
       searchText: "",
+      dialogSwitch: false,
+
+      filterProps: {
+        lvl: 0,
+        depth: 0,
+        closeness: 0,
+        emotions: 0,
+      },
+      propsAreChanged: false,
 
       topics,
       quests: questions,
+      questProps,
     };
   },
   mounted() {
-    this.pageHeight = document.documentElement.scrollHeight - 130 - 159;
+    this.pageHeight = document.documentElement.scrollHeight - 110 - 159;
   },
   methods: {
     searchQuestions(text) {
@@ -109,8 +181,32 @@ export default {
 
       this.currentTab = topic;
 
+      this.searchText = "";
+      this.resetFilterProps();
+
       if (this.searchText && this.searchText !== " ")
         this.searchQuestions(this.searchText);
+    },
+    setFilterProps(val, propName) {
+      this.filterProps[propName] = val;
+
+      this.searchQuestions(this.searchText);
+
+      this.quests = this.quests.filter((q) => q[propName] >= val);
+
+      this.propsAreChanged = true;
+    },
+    resetFilterProps() {
+      this.propsAreChanged = false;
+
+      let filterProps = {
+        lvl: 0,
+        depth: 0,
+        closeness: 0,
+        emotions: 0,
+      };
+
+      this.filterProps = filterProps;
     },
   },
 };

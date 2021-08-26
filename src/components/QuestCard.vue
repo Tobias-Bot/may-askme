@@ -34,7 +34,7 @@
           </v-btn>
           <div
             :style="
-              `max-height: ${sheetHeight}px; overflow-y: auto; padding-bottom: 20px;`
+              `max-height: ${sheetHeight}px; overflow-y: auto; padding: 0px 10px 20px 10px;`
             "
           >
             <div class="mt-2">
@@ -48,60 +48,20 @@
               {{ question.data.ps }}
             </div>
             <br />
-            <b>Сложность</b>
-            <div style="font-size: 12px;">Сложность ответа на вопрос</div>
-            <v-progress-linear
-              color="#7DB2F3"
-              class="progressBar"
-              buffer-value="0"
-              :value="question.data.lvl"
-              stream
-              rounded
-              height="6"
-            ></v-progress-linear>
-            <br />
-            <b>Глубина</b>
-            <div style="font-size: 12px;">
-              Насколько человек может открыться при ответе
+            <div v-for="prop in questProps" :key="prop.name">
+              <b>{{ prop.name }}</b>
+              <div style="font-size: 12px;">{{ prop.hint }}</div>
+              <v-progress-linear
+                :color="prop.color"
+                class="progressBar"
+                buffer-value="0"
+                :value="question.data[prop.propName]"
+                stream
+                rounded
+                height="6"
+              ></v-progress-linear>
+              <br />
             </div>
-            <v-progress-linear
-              color="#A0BFF3"
-              class="progressBar"
-              buffer-value="0"
-              :value="question.data.depth"
-              stream
-              rounded
-              height="6"
-            ></v-progress-linear>
-            <br />
-            <b>Близость</b>
-            <div style="font-size: 12px;">
-              Уровень близости к человеку при разговоре
-            </div>
-            <v-progress-linear
-              color="#C7BFF3"
-              class="progressBar"
-              buffer-value="0"
-              :value="question.data.closeness"
-              stream
-              rounded
-              height="6"
-            ></v-progress-linear>
-            <br />
-            <b>Эмоции</b>
-            <div style="font-size: 12px;">
-              Насколько сильные эмоции вызывает вопрос
-            </div>
-            <v-progress-linear
-              color="#E1B2F3"
-              class="progressBar"
-              buffer-value="0"
-              :value="question.data.emotions"
-              stream
-              rounded
-              height="6"
-            ></v-progress-linear>
-            <br />
             <br />
             <v-chip
               class="ma-1"
@@ -122,6 +82,8 @@
 // import bridge from "@vkontakte/vk-bridge";
 // import chroma from "chroma-js";
 
+import questProps from "../data/questProps";
+
 import CreateListModal from "./CreateListModal";
 
 export default {
@@ -137,6 +99,7 @@ export default {
       sheetHeight: 0,
 
       questionTags: [],
+      questProps,
     };
   },
   mounted() {

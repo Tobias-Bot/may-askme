@@ -28,7 +28,8 @@
                 <v-card-text style="font-size: 18px; line-height: 1.6;"
                   >Если ты сейчас читаешь это, то знай, что человек, который
                   сейчас сидит рядом с тобой, очень любит тебя, и ты ему очень
-                  дорога! ♥</v-card-text
+                  дорога! <br /><br /><br />
+                  Очень ♥</v-card-text
                 >
               </v-card>
             </v-tab-item>
@@ -42,7 +43,7 @@
       </v-container>
     </v-main>
 
-    <v-footer app :height="this.footerHeight" color="#FDF5E6">
+    <v-footer app :height="this.footerHeight" color="#FDF5E6" style="padding: 0px 16px">
       <v-tabs
         v-model="tab"
         :background-color="this.colorTheme"
@@ -58,8 +59,8 @@
           <v-icon>mdi-frequently-asked-questions</v-icon>
         </v-tab>
         <v-tab>
-          <div class="tagTitle">Создать</div>
-          <v-icon>mdi-pencil</v-icon>
+          <div class="tagTitle">Поиграем?</div>
+          <v-icon>mdi-account-group</v-icon>
         </v-tab>
         <v-tab>
           <div class="tagTitle">Избранное</div>
@@ -87,7 +88,7 @@ export default {
     return {
       colorTheme: "#F0EAD6",
       toolbarHeight: "55",
-      footerHeight: "130",
+      footerHeight: "110",
       mainScreenHeight: "0",
       tab: null,
 
