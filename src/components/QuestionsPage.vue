@@ -162,9 +162,9 @@ export default {
       this.searchText = text;
 
       if (text && text !== " ") {
-        let query = this.quests.filter((q) => q.text.includes(text));
-
-        this.quests = query;
+        new Promise((resolve) =>
+          resolve(this.quests.filter((q) => q.text.includes(text)))
+        ).then((res) => (this.quests = res));
       } else {
         this.quests = questions;
 
@@ -173,8 +173,11 @@ export default {
     },
     topicQuestions(topic) {
       if (topic !== "все вопросы") {
-        let query = questions.filter((q) => q.topics.includes(topic));
-        this.quests = query;
+        new Promise((resolve) =>
+          resolve(questions.filter((q) => q.topics.includes(topic)))
+        ).then((query) => {
+          this.quests = query;
+        });
       } else {
         this.quests = questions;
       }
@@ -186,14 +189,22 @@ export default {
       // }
 
       if (this.searchText && this.searchText !== " ")
-        this.searchQuestions(this.searchText);
+        new Promise((resolve) =>
+          resolve(this.searchQuestions(this.searchText))
+        );
     },
     setFilterProps(val, propName) {
       this.filterProps[propName] = val;
 
-      this.searchQuestions(this.searchText);
-
-      this.quests = this.quests.filter((q) => q[propName] >= val);
+      new Promise((resolve) =>
+        resolve(this.searchQuestions(this.searchText))
+      ).then((res) => {
+        new Promise((resolve) =>
+          resolve(this.quests.filter((q) => q[propName] >= val))
+        ).then((res) => {
+          this.quests = res;
+        });
+      });
 
       this.propsAreChanged = true;
     },
@@ -209,7 +220,7 @@ export default {
 
       this.filterProps = filterProps;
 
-      this.searchQuestions(this.searchText);
+      new Promise((resolve) => resolve(this.searchQuestions(this.searchText)));
     },
   },
 };
