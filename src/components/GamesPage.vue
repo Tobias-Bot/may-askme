@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import GameCard from "./GameCard.vue";
+// import GameCard from "./GameCard.vue";
 
 import games from "../data/games";
 
 export default {
   name: "GamesPage",
   components: {
-    GameCard,
+    // GameCard,
   },
   data() {
     return {
