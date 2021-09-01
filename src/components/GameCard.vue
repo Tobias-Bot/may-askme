@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 10px;">
+  <div style="padding: 5px;">
     <v-card class="mx-auto" color="#FFF9ED">
       <v-card-title
         class="text"
