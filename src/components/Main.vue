@@ -16,6 +16,39 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
+        <v-dialog v-model="dialogSwitch" scrollable>
+          <v-card color="#FDF5E6">
+            <v-card-title>Привет!</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text
+              style="text-align: center; padding: 20px; font-weight: 500; font-size: 14px;"
+            >
+              Мы заметили, что ты не подписан на Май 😔
+              <br />
+              <br />
+              Пожалуйста, поддержи нас подпиской на сообщество, ведь то, что
+              делает Май, все это для тебя. Присоединяйся к нашей семье, чтобы
+              учиться лучше разбираться в себе и других!
+              <br />
+              <br />
+              ♥
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialogSwitch = !dialogSwitch"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-btn color="blue darken-1" text @click="subscribeOnGroup">
+                Подписаться
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <v-card>
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -38,7 +71,12 @@
       </v-container>
     </v-main>
 
-    <v-footer app :height="this.footerHeight" color="#FDF5E6" style="padding: 0px 16px">
+    <v-footer
+      app
+      :height="this.footerHeight"
+      color="#FDF5E6"
+      style="padding: 0px 16px"
+    >
       <v-tabs
         v-model="tab"
         :background-color="this.colorTheme"
@@ -67,12 +105,16 @@
 </template>
 
 <script>
-// import bridge from "@vkontakte/vk-bridge";
+import bridge from "@vkontakte/vk-bridge";
 // import chroma from "chroma-js";
 
 import QuestionsPage from "./QuestionsPage.vue";
 import FavoritesPage from "./FavoritesPage.vue";
 import GamesPage from "./GamesPage.vue";
+
+const group_id = 160404048;
+const token =
+  "7ba81f6850cf874fc5ba50ecad50cb0d38ab5bcd4cbc9e6d054bbe276f52c1dfa0b8e7722648d20cc12b9";
 
 export default {
   name: "Main",
@@ -88,6 +130,7 @@ export default {
       footerHeight: "110",
       mainScreenHeight: "0",
       tab: null,
+      dialogSwitch: false,
 
       show: false,
     };
@@ -104,6 +147,39 @@ export default {
 
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
+
+    this.subscribeModal();
+  },
+  methods: {
+    subscribeModal() {
+      bridge.send("VKWebAppGetUserInfo").then((r) => {
+        bridge
+          .send("VKWebAppCallAPIMethod", {
+            method: "groups.isMember",
+            request_id: "info",
+            params: {
+              user_id: r.id,
+              group_id,
+              v: "5.131",
+              access_token: token,
+            },
+          })
+          .then((res) => {
+            let isMember = res.response;
+
+            if (isMember) {
+              setTimeout(() => {
+                this.dialogSwitch = true;
+              }, 15000);
+            }
+          });
+      });
+    },
+    subscribeOnGroup() {
+      bridge.send("VKWebAppJoinGroup", { group_id }).then(() => {
+        this.dialogSwitch = false;
+      });
+    },
   },
 };
 </script>
