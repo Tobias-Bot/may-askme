@@ -25,12 +25,7 @@
             </v-tab-item>
             <v-tab-item>
               <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
-                <v-card-text style="font-size: 18px; line-height: 1.6;"
-                  >Если ты сейчас читаешь это, то знай, что человек, который
-                  сейчас сидит рядом с тобой, очень любит тебя, и ты ему очень
-                  дорога! <br /><br /><br />
-                  Очень ♥</v-card-text
-                >
+                <GamesPage />
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -77,12 +72,14 @@
 
 import QuestionsPage from "./QuestionsPage.vue";
 import FavoritesPage from "./FavoritesPage.vue";
+import GamesPage from "./GamesPage.vue";
 
 export default {
   name: "Main",
   components: {
     QuestionsPage,
     FavoritesPage,
+    GamesPage,
   },
   data() {
     return {

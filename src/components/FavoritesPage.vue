@@ -29,6 +29,8 @@
       <v-tabs-items v-model="tabs">
         <v-tab-item>
           <v-card
+            v-scroll.self="onScroll"
+            ref="ListFavoritesPage"
             flat
             tile
             color="#F0EAD6"
@@ -38,10 +40,24 @@
           >
             <div v-if="savedCards.length">
               <QuestCard
-                v-for="quest in searchQuests"
+                v-for="quest in searchQuests.filter(
+                  (q, j) => j < questCountFilter
+                )"
                 :key="quest"
                 :question="{ index: quest, data: quests[quest] }"
               />
+
+              <div
+                v-show="loadQuests && questCountFilter <= searchQuests.length"
+                style="width: 100%; text-align: center; opacity: 0.7; font-size: 14px;"
+              >
+                <br />
+
+                секундочку..
+
+                <br />
+                <br />
+              </div>
             </div>
             <div v-else>
               <v-card-text class="hintText"
@@ -89,6 +105,8 @@ import ListCard from "./ListCard.vue";
 import CreateListModal from "./CreateListModal";
 import questions from "../data/questions/all";
 
+const viewQuestCount = 6;
+
 export default {
   name: "FavoritesPage",
   components: {
@@ -105,6 +123,10 @@ export default {
       searchInputLabel: "Поиск по вопросам",
       dialog: false,
 
+      questCountFilter: viewQuestCount,
+      prevQuestsFilter: 0,
+      loadQuests: true,
+
       quests: questions,
       searchQuests: [],
       searchLists: [],
@@ -115,6 +137,9 @@ export default {
 
     this.searchQuests = this.savedCards;
     this.searchLists = this.savedLists;
+  },
+  updated() {
+    this.loadQuests = true;
   },
   computed: {
     savedCards() {
@@ -127,6 +152,7 @@ export default {
   methods: {
     searchQuestions(text) {
       this.searchText = text;
+      this.questCountFilter = viewQuestCount;
 
       if (this.searchText && this.searchText !== " ") {
         if (this.currentTab === "все") {
@@ -164,6 +190,20 @@ export default {
       if (topic === "списки") this.searchInputLabel = "Найти список";
 
       this.searchQuestions();
+    },
+    onScroll(e) {
+      let viewHeight = this.$refs.ListFavoritesPage.$refs.link.scrollHeight;
+
+      if (
+        (e.target.scrollTop * 100) / viewHeight >= 20 &&
+        this.questCountFilter <= questions.length &&
+        this.loadQuests
+      ) {
+        this.loadQuests = false;
+        this.questCountFilter += this.questCountFilter;
+
+        //console.log("new cards are loaded");
+      }
     },
   },
 };

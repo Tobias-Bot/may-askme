@@ -18,7 +18,7 @@
             ></v-text-field>
           </v-col>
           <v-col>
-            <v-dialog v-model="dialogSwitch" scrollable>
+            <v-dialog v-model="dialogSwitch" scrollable persistent>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#FDF5E6" block v-bind="attrs" v-on="on"
                   ><v-icon v-show="!propsAreChanged" color="#717171"
@@ -92,6 +92,8 @@
       <v-tabs-items v-model="tabs">
         <v-tab-item v-for="topic in topics" :key="topic.title">
           <v-card
+            v-scroll.self="onScroll"
+            ref="ListPage"
             flat
             tile
             color="#F0EAD6"
@@ -99,17 +101,33 @@
               `display: block; max-height: ${pageHeight}px; overflow-y: auto; padding: 1px 0px 15px 0px;`
             "
           >
-            <v-card-text v-show="topic.description" style="font-size: 13px;">{{
-              topic.description
-            }}</v-card-text>
+            <v-card-text
+              v-show="topic.description"
+              style="font-size: 13px; line-height: 1.5;"
+              >{{ topic.description }}</v-card-text
+            >
             <div v-show="!quests.length" class="hintText">
               Ничего не нашлось 😴
             </div>
             <QuestCard
-              v-for="(quest, i) in quests"
+              v-for="(quest, i) in quests.filter(
+                (q, j) => j < questCountFilter
+              )"
               :key="i"
               :question="{ index: i, data: quest }"
             />
+
+            <div
+              v-show="loadQuests && questCountFilter <= quests.length"
+              style="width: 100%; text-align: center; opacity: 0.7; font-size: 14px;"
+            >
+              <br />
+
+              секундочку..
+
+              <br />
+              <br />
+            </div>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -127,6 +145,8 @@ import questProps from "../data/questProps";
 
 import QuestCard from "./QuestCard.vue";
 
+const viewQuestCount = 6;
+
 export default {
   name: "QuestionPage",
   components: {
@@ -140,6 +160,10 @@ export default {
       currentTab: "все вопросы",
       searchText: "",
       dialogSwitch: false,
+
+      questCountFilter: viewQuestCount,
+      prevQuestsFilter: 0,
+      loadQuests: true,
 
       filterProps: {
         lvl: 0,
@@ -157,9 +181,13 @@ export default {
   mounted() {
     this.pageHeight = document.documentElement.scrollHeight - 110 - 159;
   },
+  updated() {
+    this.loadQuests = true;
+  },
   methods: {
     searchQuestions(text) {
       this.searchText = text;
+      this.questCountFilter = viewQuestCount;
 
       if (text && text !== " ") {
         new Promise((resolve) =>
@@ -183,6 +211,7 @@ export default {
       }
 
       this.currentTab = topic;
+      this.questCountFilter = viewQuestCount;
 
       // if (this.propsAreChanged) {
       //   this.resetFilterProps();
@@ -198,7 +227,7 @@ export default {
 
       new Promise((resolve) =>
         resolve(this.searchQuestions(this.searchText))
-      ).then((res) => {
+      ).then(() => {
         new Promise((resolve) =>
           resolve(this.quests.filter((q) => q[propName] >= val))
         ).then((res) => {
@@ -221,6 +250,23 @@ export default {
       this.filterProps = filterProps;
 
       new Promise((resolve) => resolve(this.searchQuestions(this.searchText)));
+    },
+    onScroll(e) {
+      let viewHeight = this.$refs.ListPage[0].$refs.link.scrollHeight;
+
+      // console.log(e.target.scrollTop * 100 / viewHeight);
+
+      if (
+        (e.target.scrollTop * 100) / viewHeight >= 20 &&
+        this.questCountFilter <= questions.length &&
+        this.loadQuests
+      ) {
+        this.loadQuests = false;
+        this.questCountFilter += this.questCountFilter;
+        this.prevQuestsFilter = e.target.scrollTop;
+
+        // console.log("new cards are loaded");
+      }
     },
   },
 };
