@@ -57,7 +57,12 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat color="#FDF5E6" :height="this.mainScreenHeight">
+              <v-card
+                flat
+                color="#FDF5E6"
+                :height="this.mainScreenHeight"
+                style="overflow-y: auto;"
+              >
                 <GamesPage />
               </v-card>
             </v-tab-item>
@@ -167,10 +172,10 @@ export default {
           .then((res) => {
             let isMember = res.response;
 
-            if (isMember) {
+            if (!isMember) {
               setTimeout(() => {
                 this.dialogSwitch = true;
-              }, 15000);
+              }, 10000);
             }
           });
       });

@@ -5,18 +5,27 @@
       рядом с тобой, очень любит тебя, и ты ему очень дорога! <br /><br /><br />
       Очень ♥
     </v-card-text>
+
+    <GameCard v-for="(game, i) in games" :key="i" :game="game" />
   </div>
 </template>
 
 <script>
+import GameCard from "./GameCard.vue";
+
+import games from "../data/games";
+
 export default {
   name: "GamesPage",
-  components: {},
-  data() {
-    return {};
+  components: {
+    GameCard,
   },
-  mounted() {
-    this.pageHeight = document.documentElement.scrollHeight - 110 - 159;
+  data() {
+    return {
+      reveal: false,
+
+      games,
+    };
   },
   methods: {},
 };
