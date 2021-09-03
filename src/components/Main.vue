@@ -182,9 +182,9 @@ export default {
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
 
-    // setTimeout(() => {
-    //   this.dialogLove = true;
-    // }, 10000);
+    setTimeout(() => {
+      this.dialogLove = true;
+    }, 10000);
   },
   methods: {
     subscribeModal() {
