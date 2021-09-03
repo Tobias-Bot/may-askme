@@ -195,7 +195,7 @@ export default {
       let viewHeight = this.$refs.ListFavoritesPage.$refs.link.scrollHeight;
 
       if (
-        (e.target.scrollTop * 100) / viewHeight >= 20 &&
+        (e.target.scrollTop * 100) / viewHeight >= 25 &&
         this.questCountFilter <= questions.length &&
         this.loadQuests
       ) {

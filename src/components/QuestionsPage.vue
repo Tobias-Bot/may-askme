@@ -3,7 +3,7 @@
     <v-card>
       <v-toolbar color="#FDF5E6" style="padding-top: 5px;">
         <v-row dense>
-          <v-col cols="9">
+          <v-col cols="8">
             <v-text-field
               hide-details
               label="Найти вопрос"
@@ -17,8 +17,8 @@
               @input="(e) => searchQuestions(e)"
             ></v-text-field>
           </v-col>
-          <v-col>
-            <v-dialog v-model="dialogSwitch" scrollable persistent>
+          <v-col cols="2">
+            <v-dialog v-model="dialogFilterSwitch" scrollable persistent>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#FDF5E6" block v-bind="attrs" v-on="on"
                   ><v-icon v-show="!propsAreChanged" color="#717171"
@@ -59,7 +59,7 @@
                   <v-btn
                     color="blue darken-1"
                     text
-                    @click="dialogSwitch = false"
+                    @click="dialogFilterSwitch = false"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
@@ -70,6 +70,53 @@
                     @click="resetFilterProps"
                   >
                     сбросить
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-col>
+          <v-col cols="2">
+            <v-dialog v-model="dialogAddSwitch" scrollable>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  elevation="0"
+                  color="#FDF5E6"
+                  block
+                  v-bind="attrs"
+                  v-on="on"
+                  ><v-icon color="#717171">mdi-plus</v-icon>
+                </v-btn>
+              </template>
+              <v-card color="#FDF5E6">
+                <v-card-title>Предложить вопрос</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text
+                  style="text-align: center; padding: 20px; font-weight: 500;"
+                >
+                  Ты можешь предложить свой вопрос через «предложить новость»
+                  или личные сообщения Май . К вопросу также можно добавить
+                  небольшое пояснение. После одобрения администрацией мы добавим
+                  его в общий каталог
+                  <br />
+                  <br />
+                  <v-btn color="#59564F" text>
+                    <a
+                      href="https://vk.com/warmay"
+                      style="text-decoration: none;"
+                      >Предложить</a
+                    >
+                  </v-btn>
+                  <br />
+                  <br />
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialogAddSwitch = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -159,7 +206,8 @@ export default {
       pageHeight: 0,
       currentTab: "все вопросы",
       searchText: "",
-      dialogSwitch: false,
+      dialogFilterSwitch: false,
+      dialogAddSwitch: false,
 
       questCountFilter: viewQuestCount,
       prevQuestsFilter: 0,
@@ -257,7 +305,7 @@ export default {
       // console.log(e.target.scrollTop * 100 / viewHeight);
 
       if (
-        (e.target.scrollTop * 100) / viewHeight >= 20 &&
+        (e.target.scrollTop * 100) / viewHeight >= 25 &&
         this.questCountFilter <= questions.length &&
         this.loadQuests
       ) {

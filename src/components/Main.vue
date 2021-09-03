@@ -6,8 +6,9 @@
       :color="this.colorTheme"
       style="box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);"
     >
-      <v-toolbar-title
-        ><span class="logoTitle">Мαú</span
+      <v-toolbar-title>
+        <a href="https://vk.com/warmay" hidden ref="linkRef"></a
+        ><span class="logoTitle" @click="goToMay">Мαú</span
         ><span class="appTitle">аскМи</span></v-toolbar-title
       >
     </v-app-bar>
@@ -44,6 +45,30 @@
               </v-btn>
               <v-btn color="blue darken-1" text @click="subscribeOnGroup">
                 Подписаться
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogLove" scrollable persistent>
+          <v-card color="#FDF5E6">
+            <v-card-title>Важное уведомление!</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text style="font-size: 18px; line-height: 1.6;">
+              <br />
+              <br />
+              Если ты сейчас читаешь это, то знай, что человек, который сейчас
+              сидит рядом с тобой, очень любит тебя, и ты ему очень дорога! ♥
+              <br /><br />
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialogLove = !dialogLove"
+              >
+                <v-icon>mdi-heart</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -111,6 +136,7 @@
 
 <script>
 import bridge from "@vkontakte/vk-bridge";
+import qs from "querystring";
 // import chroma from "chroma-js";
 
 import QuestionsPage from "./QuestionsPage.vue";
@@ -131,11 +157,12 @@ export default {
   data() {
     return {
       colorTheme: "#F0EAD6",
-      toolbarHeight: "55",
-      footerHeight: "110",
-      mainScreenHeight: "0",
+      toolbarHeight: 55,
+      footerHeight: 110,
+      mainScreenHeight: 0,
       tab: null,
       dialogSwitch: false,
+      dialogLove: false,
 
       show: false,
     };
@@ -146,6 +173,8 @@ export default {
 
     if (savedCards) this.$store.commit("setCards", savedCards);
     if (savedLists) this.$store.commit("setLists", savedLists);
+
+    this.getInitialProps();
   },
   mounted() {
     const screenHeight = document.documentElement.scrollHeight;
@@ -153,37 +182,54 @@ export default {
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
 
-    this.subscribeModal();
+    // setTimeout(() => {
+    //   this.dialogLove = true;
+    // }, 10000);
   },
   methods: {
     subscribeModal() {
-      bridge.send("VKWebAppGetUserInfo").then((r) => {
-        bridge
-          .send("VKWebAppCallAPIMethod", {
-            method: "groups.isMember",
-            request_id: "info",
-            params: {
-              user_id: r.id,
-              group_id,
-              v: "5.131",
-              access_token: token,
-            },
-          })
-          .then((res) => {
-            let isMember = res.response;
-
-            if (!isMember) {
-              setTimeout(() => {
-                this.dialogSwitch = true;
-              }, 10000);
-            }
-          });
-      });
+      bridge.send("VKWebAppGetUserInfo");
     },
     subscribeOnGroup() {
       bridge.send("VKWebAppJoinGroup", { group_id }).then(() => {
         this.dialogSwitch = false;
       });
+    },
+    getInitialProps() {
+      const str = window.location.search.slice(1);
+      const objParams = qs.parse(str);
+
+      let user_id = objParams.vk_user_id;
+      let platform = objParams.vk_platform;
+
+      if (platform === "mobile_iphone") {
+        console.log(objParams);
+      }
+
+      bridge
+        .send("VKWebAppCallAPIMethod", {
+          method: "groups.isMember",
+          request_id: "info",
+          params: {
+            user_id,
+            group_id,
+            v: "5.131",
+            access_token: token,
+          },
+        })
+        .then((res) => {
+          let isMember = res.response;
+
+          if (!isMember) {
+            setTimeout(() => {
+              this.dialogSwitch = true;
+            }, 12500);
+          }
+        });
+    },
+    goToMay() {
+      //bridge.send("VKWebAppClose", { status: "success", payload: {} });
+      this.$refs.linkRef.click();
     },
   },
 };
