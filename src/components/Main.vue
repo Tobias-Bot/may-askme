@@ -203,7 +203,7 @@ export default {
       let platform = objParams.vk_platform;
 
       if (platform === "mobile_iphone") {
-        console.log(objParams);
+        this.toolbarHeight = 70;
       }
 
       bridge
