@@ -1,11 +1,22 @@
 <template>
   <div style="margin-bottom: 20px;">
     <v-card flat color="#FDF5E6" style="margin: 10px;">
+      <v-alert
+        dense
+        elevation="24"
+        color="#FFF9ED"
+        style="position: absolute; width: 100%; top: 3px;"
+        icon="mdi-content-copy"
+        :value="copyTextMes"
+        transition="scale-transition"
+      >
+        Текст вопроса скопирован!
+      </v-alert>
       <v-card-title
         class="text"
         style="font-size: 16px; line-height: 1.5;"
-        @click="sheet = true"
-        >{{ this.question.data.text }}</v-card-title
+        @click="copyQuestText"
+        >{{ question.data.text }}</v-card-title
       >
       <v-row class="mr-1 pb-2 pt-1" align="center" justify="end">
         <v-icon class="cardMiniBtn" @click="sheet = true"
@@ -79,8 +90,7 @@
 </template>
 
 <script>
-// import bridge from "@vkontakte/vk-bridge";
-// import chroma from "chroma-js";
+import bridge from "@vkontakte/vk-bridge";
 
 import questProps from "../data/questProps";
 
@@ -97,6 +107,8 @@ export default {
       dialog: false,
       sheet: false,
       sheetHeight: 0,
+
+      copyTextMes: false,
 
       questionTags: [],
       questProps,
@@ -175,6 +187,15 @@ export default {
       );
 
       this.$store.commit("setLists", lists);
+    },
+    copyQuestText() {
+      bridge.send("VKWebAppCopyText", { text: this.question.data.text });
+
+      this.copyTextMes = true;
+
+      setTimeout(() => {
+        this.copyTextMes = false;
+      }, 1000);
     },
   },
 };

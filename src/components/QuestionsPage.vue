@@ -156,6 +156,7 @@
             <div v-show="!quests.length" class="hintText">
               Ничего не нашлось 😴
             </div>
+
             <QuestCard
               v-for="(quest, i) in quests.filter(
                 (q, j) => j < questCountFilter
