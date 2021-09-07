@@ -97,9 +97,6 @@
 </template>
 
 <script>
-// import bridge from "@vkontakte/vk-bridge";
-// import chroma from "chroma-js";
-
 import QuestCard from "./QuestCard.vue";
 import ListCard from "./ListCard.vue";
 import CreateListModal from "./CreateListModal";
@@ -201,8 +198,6 @@ export default {
       ) {
         this.loadQuests = false;
         this.questCountFilter += this.questCountFilter;
-
-        //console.log("new cards are loaded");
       }
     },
   },

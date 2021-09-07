@@ -137,7 +137,6 @@
 <script>
 import bridge from "@vkontakte/vk-bridge";
 import qs from "querystring";
-// import chroma from "chroma-js";
 
 import QuestionsPage from "./QuestionsPage.vue";
 import FavoritesPage from "./FavoritesPage.vue";
@@ -182,9 +181,9 @@ export default {
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
 
-    // setTimeout(() => {
-    //   this.dialogLove = true;
-    // }, 10000);
+    setTimeout(() => {
+      this.dialogLove = true;
+    }, 10000);
   },
   methods: {
     subscribeModal() {

@@ -184,9 +184,6 @@
 </template>
 
 <script>
-// import bridge from "@vkontakte/vk-bridge";
-// import chroma from "chroma-js";
-
 import topics from "../data/topics";
 import questions from "../data/questions/all";
 import questProps from "../data/questProps";

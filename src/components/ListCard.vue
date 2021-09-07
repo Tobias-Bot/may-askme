@@ -167,9 +167,6 @@
 </template>
 
 <script>
-// import bridge from "@vkontakte/vk-bridge";
-// import chroma from "chroma-js";
-
 import QuestCard from "./QuestCard.vue";
 
 import questions from "../data/questions/all";
