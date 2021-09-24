@@ -230,8 +230,6 @@ export default {
 
     if (savedCards) this.$store.commit("setCards", savedCards);
     if (savedLists) this.$store.commit("setLists", savedLists);
-
-    this.getInitialProps();
   },
   mounted() {
     const screenHeight = document.documentElement.scrollHeight;
@@ -243,6 +241,8 @@ export default {
       setTimeout(() => {
         this.dialogLove = true;
       }, 10000);
+
+    this.getInitialProps();
   },
   methods: {
     subscribeModal() {
