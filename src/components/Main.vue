@@ -1,11 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      :height="this.toolbarHeight"
-      :color="this.colorTheme"
-      style="box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);"
-    >
+    <v-app-bar app :height="this.toolbarHeight" color="#FDF5E6" elevation="0">
       <v-toolbar-title>
         <a href="https://vk.com/warmay" hidden ref="linkRef"></a
         ><span class="logoTitle" @click="goToMay">Мαú</span
@@ -50,6 +45,28 @@
           </v-card>
         </v-dialog>
 
+        <v-dialog v-model="dialogNotifySwitch" scrollable persistent>
+          <v-card color="#FDF5E6">
+            <v-card-title>Ой..</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text
+              style="text-align: center; padding: 20px; font-weight: 500; font-size: 14px;"
+            >
+              <br />
+              Для дальнейшей работы приложения необходимо разрешить доступ к
+              сообществам. Это необходимо для того, чтобы Май смог
+              идентифицировать тебя
+              <br />
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn color="blue darken-1" text @click="getUserData">
+                Разрешить
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <v-dialog v-model="dialogLove" scrollable persistent>
           <v-card color="#FDF5E6">
             <v-card-title>Важное уведомление!</v-card-title>
@@ -69,6 +86,45 @@
                 @click="dialogLove = !dialogLove"
               >
                 <v-icon>mdi-heart</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogVkDonut" scrollable persistent>
+          <v-card color="#FDF5E6">
+            <v-card-title>Упс..</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text
+              style="text-align: center; padding: 20px; font-weight: 500; font-size: 14px;"
+            >
+              Доступ к этому приложению ограничен 😔
+              <br />
+              <br />
+              Это приложение доступно только тем, кто оформил подписку на vk
+              donut в Май.
+              <br />
+              <br />
+              <div style="text-align: left;">
+                <b>В подписку входит:</b>
+                <br />
+                * Консультации с психологами в отдельном чате;<br />
+                * Доступ ко всем приложениям Мая, среди которых: каталог с
+                вопросами на все случаи жизни (Май-аскМи), приложение с тестами,
+                которые помогут лучше узнать себя (Май-тесты) и каталог с
+                упражнениями и практиками (Май-хауТу)<br />
+                * Ранний доступ к новым публикациям Май!
+                <br />
+                <br />
+                Стоимость подписки составляет всего 100 рублей. Если ты ценишь
+                наш труд, подписывайся и пользуйся тем, что мы для тебя создали!
+                Иначе, зачем это все... Мы помогаем тебе, ты поддерживаешь нас.
+              </div>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn color="blue darken-1" text>
+                Оформить подписку
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -143,8 +199,6 @@ import FavoritesPage from "./FavoritesPage.vue";
 import GamesPage from "./GamesPage.vue";
 
 const group_id = 160404048;
-const token =
-  "7ba81f6850cf874fc5ba50ecad50cb0d38ab5bcd4cbc9e6d054bbe276f52c1dfa0b8e7722648d20cc12b9";
 
 export default {
   name: "Main",
@@ -162,6 +216,10 @@ export default {
       tab: null,
       dialogSwitch: false,
       dialogLove: false,
+      dialogNotifySwitch: false,
+      dialogVkDonut: false,
+
+      userId: 0,
 
       show: false,
     };
@@ -181,9 +239,10 @@ export default {
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
 
-    setTimeout(() => {
-      this.dialogLove = true;
-    }, 10000);
+    if (this.userId == 184707643)
+      setTimeout(() => {
+        this.dialogLove = true;
+      }, 10000);
   },
   methods: {
     subscribeModal() {
@@ -198,31 +257,69 @@ export default {
       const str = window.location.search.slice(1);
       const objParams = qs.parse(str);
 
-      let user_id = objParams.vk_user_id;
+      this.userId = objParams.vk_user_id;
       let platform = objParams.vk_platform;
 
       if (platform === "mobile_iphone") {
         this.toolbarHeight = 70;
       }
 
+      this.getUserData();
+    },
+    getUserData() {
       bridge
-        .send("VKWebAppCallAPIMethod", {
-          method: "groups.isMember",
-          request_id: "info",
-          params: {
-            user_id,
-            group_id,
-            v: "5.131",
-            access_token: token,
-          },
+        .send("VKWebAppGetAuthToken", {
+          app_id: 7929268,
+          scope: "groups",
         })
-        .then((res) => {
-          let isMember = res.response;
+        .then((r) => {
+          this.dialogNotifySwitch = false;
 
-          if (!isMember) {
-            setTimeout(() => {
-              this.dialogSwitch = true;
-            }, 12500);
+          console.log("Hello");
+
+          let token = r.access_token;
+
+          bridge
+            .send("VKWebAppCallAPIMethod", {
+              method: "groups.isMember",
+              request_id: "info",
+              params: {
+                user_id: this.userId,
+                group_id,
+                v: "5.131",
+                access_token: token,
+              },
+            })
+            .then((res) => {
+              let isMember = res.response;
+              if (!isMember && !this.dialogVkDonut) {
+                setTimeout(() => {
+                  this.dialogSwitch = true;
+                }, 20000);
+              }
+            });
+
+          bridge
+            .send("VKWebAppCallAPIMethod", {
+              method: "donut.isDon",
+              request_id: "info",
+              params: {
+                owner_id: group_id,
+                v: "5.131",
+                access_token: token,
+              },
+            })
+            .then((r) => {
+              if (!r.response) {
+                setTimeout(() => {
+                  this.dialogVkDonut = true;
+                }, 6000);
+              }
+            });
+        })
+        .catch((e) => {
+          if (e.error_data.error_code == 4) {
+            this.dialogNotifySwitch = true;
           }
         });
     },

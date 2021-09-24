@@ -303,7 +303,7 @@ export default {
       // console.log(e.target.scrollTop * 100 / viewHeight);
 
       if (
-        (e.target.scrollTop * 100) / viewHeight >= 25 &&
+        (e.target.scrollTop * 100) / viewHeight >= 35 &&
         this.questCountFilter <= questions.length &&
         this.loadQuests
       ) {
