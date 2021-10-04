@@ -67,31 +67,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogLove" scrollable persistent>
-          <v-card color="#FDF5E6">
-            <v-card-title>Важное уведомление!</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text style="font-size: 18px; line-height: 1.6;">
-              <br />
-              <br />
-              Если ты сейчас читаешь это, то знай, что человек, который сейчас
-              сидит рядом с тобой, очень любит тебя, и ты ему очень дорога! ♥
-              <br /><br />
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="dialogLove = !dialogLove"
-              >
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialogVkDonut" scrollable persistent>
+        <!-- <v-dialog v-model="dialogVkDonut" scrollable persistent>
           <v-card color="#FDF5E6">
             <v-card-title>Упс..</v-card-title>
             <v-divider></v-divider>
@@ -101,19 +77,21 @@
               Доступ к этому приложению ограничен 😔
               <br />
               <br />
-              Это приложение доступно только тем, кто оформил подписку на vk
-              donut в Май.
+              Это приложение доступно только тем, кто оформил подписку на Май.
               <br />
               <br />
               <div style="text-align: left;">
-                <b>В подписку входит:</b>
+                <b>Что есть в платной подписке Май?</b>
                 <br />
-                * Консультации с психологами в отдельном чате;<br />
-                * Доступ ко всем приложениям Мая, среди которых: каталог с
-                вопросами на все случаи жизни (Май-аскМи), приложение с тестами,
-                которые помогут лучше узнать себя (Май-тесты) и каталог с
-                упражнениями и практиками (Май-хауТу)<br />
-                * Ранний доступ к новым публикациям Май!
+                * Ответы на твои вопросы от психологов;<br />
+                * Консультации с психологами в отдельном чате или лс;<br />
+                * Доступ к приложению с практическими упражнениями по
+                саморазвитию и ментальному здоровью;<br />
+                * Посиделки с админами в отдельном чате вк или дискорд-сервере и
+                обсуждение развития Май;<br />
+                * Мини-бонус: звездочка рядом с именем;<br />
+                * Ранний доступ к новым публикациям Май и эксклюзивные
+                материалы!
                 <br />
                 <br />
                 Стоимость подписки составляет всего 100 рублей. Если ты ценишь
@@ -123,12 +101,13 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="blue darken-1" text>
+              <a href="https://vk.com/donut/warmay" hidden ref="donLinkRef"></a>
+              <v-btn color="blue darken-1" text @click="goToDonut">
                 Оформить подписку
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>
+        </v-dialog> -->
 
         <v-card>
           <v-tabs-items v-model="tab">
@@ -215,9 +194,9 @@ export default {
       mainScreenHeight: 0,
       tab: null,
       dialogSwitch: false,
-      dialogLove: false,
+      // dialogLove: false,
       dialogNotifySwitch: false,
-      dialogVkDonut: false,
+      // dialogVkDonut: false,
 
       userId: 0,
 
@@ -237,10 +216,10 @@ export default {
     this.mainScreenHeight =
       screenHeight - this.toolbarHeight - this.footerHeight;
 
-    if (this.userId == 184707643)
-      setTimeout(() => {
-        this.dialogLove = true;
-      }, 10000);
+    // if (this.userId == 184707643)
+    //   setTimeout(() => {
+    //     this.dialogLove = true;
+    //   }, 10000);
 
     this.getInitialProps();
   },
@@ -275,8 +254,6 @@ export default {
         .then((r) => {
           this.dialogNotifySwitch = false;
 
-          console.log("Hello");
-
           let token = r.access_token;
 
           bridge
@@ -299,23 +276,23 @@ export default {
               }
             });
 
-          bridge
-            .send("VKWebAppCallAPIMethod", {
-              method: "donut.isDon",
-              request_id: "info",
-              params: {
-                owner_id: group_id,
-                v: "5.131",
-                access_token: token,
-              },
-            })
-            .then((r) => {
-              if (!r.response) {
-                setTimeout(() => {
-                  this.dialogVkDonut = true;
-                }, 6000);
-              }
-            });
+          // bridge
+          //   .send("VKWebAppCallAPIMethod", {
+          //     method: "donut.isDon",
+          //     request_id: "info",
+          //     params: {
+          //       owner_id: group_id,
+          //       v: "5.131",
+          //       access_token: token,
+          //     },
+          //   })
+          //   .then((r) => {
+          //     if (!r.response) {
+          //       setTimeout(() => {
+          //         this.dialogVkDonut = true;
+          //       }, 6000);
+          //     }
+          //   });
         })
         .catch((e) => {
           if (e.error_data.error_code == 4) {
@@ -327,6 +304,9 @@ export default {
       //bridge.send("VKWebAppClose", { status: "success", payload: {} });
       this.$refs.linkRef.click();
     },
+    // goToDonut() {
+    //   this.$refs.donLinkRef.click();
+    // },
   },
 };
 </script>
